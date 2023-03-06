@@ -11,11 +11,11 @@ var router = express.Router();
 const connection = require('../connection')
 const ObjectId = require('mongodb').ObjectId; 
 const database = connection.db('User');
-const users = database.collection('UserDetails');
+const userdb = database.collection('UserDetails');
 
 // 2 Get all users
 router.get('/users', async function(req, res){
-    const body = await users.find({}).toArray();
+    const body = await userdb.find({}).toArray();
     //console.log(body[0].email) //it would output email of first object
     res.send(body);
 });
@@ -24,7 +24,7 @@ router.get('/users', async function(req, res){
 router.post('/add', async function(req, res){
     let body = req.body;
     try{
-        users.insertOne(body);
+        userdb.insertOne(body);
     } catch (err) {
         console.log("Failed because ${err}");
     }
@@ -38,7 +38,7 @@ router.put('/:id/update', async function(req, res){
     let query = { _id : new ObjectId(userid) };
     let update = { $set: body };
     try{
-        users.updateOne(query, update);
+        userdb.updateOne(query, update);
     } catch (err) {
         console.log("Failed because", err);
     }
