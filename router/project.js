@@ -6,11 +6,11 @@ var router = express.Router();
 const connection = require('../connection')
 const ObjectId = require('mongodb').ObjectId; 
 const database = connection.db('Project');
-const projects = database.collection('ProjectDetails');
+const projectdb = database.collection('ProjectDetails');
 
 // 2 Get all projects
 router.get('/projects', async function(req, res){
-    const body = await projects.find({}).toArray();
+    const body = await projectdb.find({}).toArray();
     //console.log(body[0].email) //it would output email of first object
     res.send(body);
 });
@@ -19,7 +19,7 @@ router.get('/projects', async function(req, res){
 router.post('/add', async function(req, res){
     let body = req.body;
     try{
-        projects.insertOne(body);
+        projectdb.insertOne(body);
     } catch (err) {
         console.log("Failed because ${err}");
     }
@@ -33,7 +33,7 @@ router.put('/:id/update', async function(req, res){
     let query = { _id : new ObjectId(userid) };
     let update = { $set: body };
     try{
-        projects.updateOne(query, update);
+        projectdb.updateOne(query, update);
     } catch (err) {
         console.log("Failed because", err);
     }
@@ -46,7 +46,7 @@ router.put('/:id/approve', async function(req, res){
     let query = { _id : new ObjectId(userid) };
     let update = { $set: { Approved: true } };
     try{
-        projects.updateOne(query, update);
+        projectdb.updateOne(query, update);
     } catch (err) {
         console.log("Failed because", err);
     }
