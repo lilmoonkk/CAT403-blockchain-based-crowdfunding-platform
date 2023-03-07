@@ -45,15 +45,18 @@ router.put('/:id/update', async function(req, res){
 router.put('/:id/approve', async function(req, res){
     let projectid = req.params.id.toString();
     let query = { _id : new ObjectId(projectid) };
-    let update = { $set: { Approved: true } };
     try{
-        projectdb.updateOne(query, update);
+        //projectdb.updateOne(query, update);
         //After approval, smart contract for the project is created
         const body = await projectdb.findOne(query, { projection: {milestone:1, wallet_address:1}});
         //console.log(body);
         //need to get address from cache
-        await contract.createSmartContract({id: projectid, milestone: body.milestone}); //get projectid, milestone and wallet address and fing variable for array of objects
-        res.send(body);
+        await contract.createSmartContract({id: projectid, milestone: body.milestone}, function(value){
+            //let update = { $set: { Approved: true, contract_address: contractAddr } };
+            projectdb.updateOne(query, { $set: { approved: true, contract_address: value } });
+        }); //get projectid, milestone and wallet address and fing variable for array of objects
+        
+        res.sendStatus(200);
     } catch (err) {
         console.log("Failed because", err);
     }

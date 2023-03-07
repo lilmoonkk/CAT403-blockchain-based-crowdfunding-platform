@@ -18,7 +18,7 @@ let parameter = {
     gasPrice: web3.utils.toHex(web3.utils.toWei('30', 'gwei'))
 }
 
-const createSmartContract = ((req, res) => {
+const createSmartContract = ((req, callback) => {
     
     let milestone=[]; //organizeMilestonePayload({milestone: req.milestone});
     for(let i=0; i<req.milestone.length; i++){
@@ -34,6 +34,7 @@ const createSmartContract = ((req, res) => {
         console.log('Transaction Hash :', transactionHash);
     }).on('confirmation', () => {}).then((newContractInstance) => {
         console.log('Deployed Contract Address : ', newContractInstance.options.address);
+        callback(newContractInstance.options.address);
     })  
 });
 
