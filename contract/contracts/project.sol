@@ -5,16 +5,21 @@ contract project{
     enum State {completed, approved, notCompleted, notApproved}
     State state;
     string proofId;
-    uint projectId;
-    uint milestoneId;
+    string projectId;
     address payable company;
     uint fundAmount;
+    struct milestone{
+        uint seq;
+        uint amount;
+    }
     //address payable backer;
-
-    constructor (uint _projectId, uint _milestoneId, address payable _company) payable{
+    mapping(uint => milestone) milestones;
+    constructor (string memory _projectId, milestone[] memory _milestone, address payable _company) payable{
         fundAmount = msg.value;
         projectId = _projectId;
-        milestoneId = _milestoneId;
+        for (uint i = 1; i <= _milestone.length; i++) {
+            milestones[i] = _milestone[i-1];
+        }
         company = _company;
         //backer = _backer;
     }

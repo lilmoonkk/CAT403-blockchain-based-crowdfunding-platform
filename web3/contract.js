@@ -1,7 +1,3 @@
-// 1 Initialization
-var express = require('express');
-var router = express.Router();
-
 const Web3 = require('web3');
 const project = require('../contract/build/contracts/project')
 
@@ -16,18 +12,24 @@ let deploy_contract = new web3.eth.Contract(abi);
 // address from Ganache
 let account = '0xdbB393C2f1F81f84B3d1b86DD62cbD2bB226df36'; 
 
-let payload = {
-    data: bytecode,
-    arguments: [1, 1, account]
-}
-
 let parameter = {
     from: account,
-    gas: web3.utils.toHex(800000),
+    gas: web3.utils.toHex(6721975),
     gasPrice: web3.utils.toHex(web3.utils.toWei('30', 'gwei'))
 }
 
-router.post('/', async function(req, res){
+const createSmartContract = ((req, res) => {
+    
+    let milestone=[]; //organizeMilestonePayload({milestone: req.milestone});
+    for(let i=0; i<req.milestone.length; i++){
+        milestone.push([req.milestone[i].seq, web3.utils.toWei(String(req.milestone[i].amount), 'gwei')]);
+    }
+
+    let payload = {
+        data: bytecode,
+        arguments: [req.id, milestone, account]
+    }
+
     deploy_contract.deploy(payload).send(parameter, (err, transactionHash) => {
         console.log('Transaction Hash :', transactionHash);
     }).on('confirmation', () => {}).then((newContractInstance) => {
@@ -35,4 +37,6 @@ router.post('/', async function(req, res){
     })  
 });
 
-module.exports = router;
+module.exports = {
+    createSmartContract
+};
