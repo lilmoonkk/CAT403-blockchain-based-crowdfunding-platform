@@ -62,4 +62,13 @@ router.put('/:id/approve', async function(req, res){
     }
 });
 
+router.get('/:id/test', async function(req, res){
+    let projectid = req.params.id.toString();
+    let query = { _id : new ObjectId(projectid) };
+    const body = await projectdb.findOne(query, { projection: {contract_address:1}});
+    let result = await contract.test(body.contract_address);
+    console.log(result);
+    res.sendStatus(200);
+});
+
 module.exports = router;

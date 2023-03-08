@@ -24,6 +24,10 @@ contract project{
         //backer = _backer;
     }
 
+    function getMilestone() public view returns (milestone memory){
+        return milestones[1];
+    }
+
     function uploadProof(string memory _proofId) public{
         proofId = _proofId;
         state = State.completed;

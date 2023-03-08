@@ -38,6 +38,13 @@ const createSmartContract = ((req, callback) => {
     })  
 });
 
+const test = (async (req, callback) => {
+    const contract = new web3.eth.Contract(abi, req);
+    let milestone = await contract.methods.getMilestone().call();
+    return milestone;
+});
+
 module.exports = {
-    createSmartContract
+    createSmartContract,
+    test
 };
