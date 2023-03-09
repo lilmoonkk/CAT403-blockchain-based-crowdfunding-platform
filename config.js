@@ -1,6 +1,6 @@
 const config = {
     server: {
-        port: 3000
+        port: 3001
     },
     db: {
         uri: "mongodb+srv://letsfund:letsfund@letsfund.wyiqgcf.mongodb.net/?retryWrites=true&w=majority"
