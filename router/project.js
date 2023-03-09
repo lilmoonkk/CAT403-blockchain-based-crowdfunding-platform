@@ -4,16 +4,43 @@
 var express = require('express');
 var router = express.Router();
 const connection = require('../connection')
+const cache = require('../cache')
 const ObjectId = require('mongodb').ObjectId; 
 const database = connection.db('Project');
 const projectdb = database.collection('ProjectDetails');
 const contract = require('../web3/contract');
 
+const setCache = (async(title,body,res) => {
+    await cache.set(title, body);
+});
+
+const getCache = (async(req,res) => {
+    //let result = await cache.get(title);
+    //console.log(result);
+    console.log('cache',cache);
+    return await cache.get(req);
+});
+
+
+
 // 2 Get all projects
 router.get('/projects', async function(req, res){
-    const body = await projectdb.find({}).toArray();
-    //console.log(body[0].email) //it would output email of first object
-    res.send(body);
+    if (cache.cacheConnected){
+        let data = await getCache('projects')
+        // data is null if the key doesn't exist
+        if(data === null) {
+            data = await projectdb.find({}).toArray();
+            setCache('projects',JSON.stringify(data));
+            return res.send(data);
+        }
+        
+        //console.log(body[0].email) //it would output email of first object
+        res.send(JSON.parse(data));
+    } else {
+        const body = await projectdb.find({}).toArray();
+        //console.log(body[0].email) //it would output email of first object
+        res.send(body);
+    }
 });
 
 // 3 Add project
