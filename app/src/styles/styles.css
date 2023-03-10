@@ -1,0 +1,36 @@
+/* Sign up */
+
+.background{
+    height: calc(100vh - 85px);
+    background: rgb(254,248,246);
+}
+
+.next-button{
+    bottom: 5%;
+    /*left: 50%;*/
+    margin: -50px 0 0 -50px;
+    padding: 20px 40px;
+    position: absolute;
+}
+
+.form{
+    background-color: rgba(255,255,255);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 5px;
+    box-shadow: 0 0.5rem 1.5rem 0 rgba(0,0,0,.1);
+    height: 450px;
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+    top: 10%;
+    width: 40vw;
+}
+
+.input{
+    display: grid;
+    padding: 10px 50px;
+}
+
+.form-input{
+    padding: 10px;
+}
