@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Home from './views/Home';
 import Navbar from './components/Navbar';
 import SignUp from './views/SignUp';
+import ConnectWallet from './views/ConnectWallet';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />}/>
+        <Route path="/connect-wallet" element={<ConnectWallet />}/>
         <Route/>
       </Routes>
     </Router>
