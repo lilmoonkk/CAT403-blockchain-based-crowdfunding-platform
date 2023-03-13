@@ -1,5 +1,5 @@
 const { initializeApp } = require( "firebase/app");
-const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } = require( "firebase/auth");
+const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } = require( "firebase/auth");
 
 const firebaseConfig = {
     apiKey: "AIzaSyAwQmgxIr4QI9K00kLS75eVwzvDNOqKgso",
@@ -26,15 +26,24 @@ const createUser = (email, password, callback) => {
     }).catch(error => console.log(error.message))
 }
 
-const signInUser = (email, password) => {
+const signInUser = (email, password, callback) => {
     signInWithEmailAndPassword(auth, email, password)
     .then(userCredentials => {
         //console.log(userCredentials);
         //const user = userCredentials.user;
         //window.alert('Successfully Registered with' + ('\n') + email);
-        return userCredentials.uid;
+        callback(userCredentials.user.uid);
     }).catch(error => console.log(error.message))
 }
+
+const signOutUser = () => {
+    signOut(auth).then(() => {
+        // Sign-out successful.
+    }).catch((error) => {
+    // An error happened.
+    });
+}
+
 
 const isLoggedIn = () => {
     onAuthStateChanged(auth, (user) => {
@@ -54,5 +63,6 @@ const isLoggedIn = () => {
 module.exports = {
     createUser,
     signInUser,
+    signOutUser,
     isLoggedIn
 };

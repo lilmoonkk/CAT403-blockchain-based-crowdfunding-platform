@@ -4,6 +4,7 @@ import Home from './views/Home';
 import Navbar from './components/Navbar';
 import SignUp from './views/SignUp';
 import ConnectWallet from './views/ConnectWallet';
+import Login from './views/Login';
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
           <Route index element={<SignUp />} />
           <Route path="connect-wallet" element={<ConnectWallet />}/>{}
         </Route>
-        <Route/>
+        <Route path="login" element={<Login />}/>
       </Routes>
     </Router>
   );

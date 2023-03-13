@@ -2,11 +2,12 @@ import React, {useState, useEffect} from 'react';
 import '../styles/styles.css'
 import MetaMaskOnboarding from '@metamask/onboarding'
 import {Metamask} from '../components/svg/Metamask.jsx'
-import {useLocation} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 
 const ConnectWallet = () => {
     const [account, setAccount] = useState('');
     const state = useLocation().state;
+    const navigate = useNavigate();
 
     useEffect(() => {
         //console.log(state)
@@ -28,7 +29,7 @@ const ConnectWallet = () => {
     const submit = async () => {
         if(account){
             //console.log('account',account);
-            await fetch('/user/add',{
+            const res = await fetch('/user/add',{
                 method: 'post',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
@@ -39,6 +40,11 @@ const ConnectWallet = () => {
                     wallet_address: account
                 })
             }).catch(error => alert(error.message))
+
+            const data = await res.text();
+            sessionStorage.setItem("uid", data);
+            //After signin, back to homepage
+            navigate("/");
         } else {
             alert('Please connect wallet first!')
         }

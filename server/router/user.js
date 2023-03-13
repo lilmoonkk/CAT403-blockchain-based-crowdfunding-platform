@@ -31,11 +31,35 @@ router.post('/add', async function(req, res){
             body._id = value;
             delete body.password;
             userdb.insertOne(body);
+            res.send(value);
         });
     } catch (err) {
         console.log("Failed because ",err);
     }
-    res.send(body)
+});
+
+router.post('/login', async function(req, res){
+    let body = req.body;
+    //console.log(body)
+    try{
+        await firebase.signInUser(body.email, body.password, function(value){
+            //insert uid to database along with other data
+            res.send(value);
+        });
+    } catch (err) {
+        console.log("Failed because ",err);
+    }
+    
+});
+
+router.post('/signout', async function(req, res){
+    //console.log(body)
+    try{
+        await firebase.signOutUser()
+    } catch (err) {
+        console.log("Failed because ",err);
+    }
+    res.sendStatus(200);
 });
 
 // 4 Update user
