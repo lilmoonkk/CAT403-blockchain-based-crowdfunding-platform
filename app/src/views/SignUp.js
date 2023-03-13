@@ -10,7 +10,7 @@ const SignUp = () => {
     const [pw, setpw] = useState('');
 
     const handleNext = async() =>{
-        navigate("/connect-wallet"
+        navigate("/signup/connect-wallet"
         ,{state: {firstname: fname, lastname: lname, email: email, password: pw}});
     }
 

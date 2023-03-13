@@ -11,8 +11,10 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<SignUp />}/>
-        <Route path="/connect-wallet" element={<ConnectWallet />}/>
+        <Route path="signup">
+          <Route index element={<SignUp />} />
+          <Route path="connect-wallet" element={<ConnectWallet />}/>{}
+        </Route>
         <Route/>
       </Routes>
     </Router>
