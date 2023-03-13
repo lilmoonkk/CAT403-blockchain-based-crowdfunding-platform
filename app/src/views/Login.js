@@ -1,9 +1,7 @@
 import React, {useState} from 'react';
 import '../styles/styles.css'
-import {useNavigate} from 'react-router-dom';
   
 const Login = () => {
-    const navigate = useNavigate();
     const [email, setemail] = useState('');
     const [pw, setpw] = useState('');
 
@@ -16,10 +14,12 @@ const Login = () => {
                 password: pw
             })
         }).catch(error => alert(error.message));
+        if(res.ok){
+            const data = await res.text();
+            sessionStorage.setItem('uid', data);
+            window.location.replace('/')
+        }
         
-        const data = await res.text();
-        sessionStorage.setItem("uid", data);
-        navigate("/");
         
     }
 
