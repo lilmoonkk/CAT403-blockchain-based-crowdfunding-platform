@@ -24,7 +24,7 @@ const Login = () => {
     }
 
     return (
-        <div className="background">
+        <div className="auth-background">
             <div className="form">
                 <h1>Log In</h1>
                 <form className="form-body">

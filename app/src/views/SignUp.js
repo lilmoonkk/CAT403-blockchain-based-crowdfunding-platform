@@ -15,7 +15,7 @@ const SignUp = () => {
     }
 
     return (
-        <div className="background">
+        <div className="auth-background">
             <div className="form">
                 <h1>Sign In</h1>
                 <form className="form-body">

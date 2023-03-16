@@ -51,7 +51,7 @@ const ConnectWallet = () => {
     }
     
     return (
-        <div className='background'>
+        <div className='auth-background'>
             <div className='form'>
                 <h1>Connect your wallet</h1>
                 <p>If you don't have a wallet yet, create one now.</p>

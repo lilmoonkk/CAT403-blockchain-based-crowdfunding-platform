@@ -27,6 +27,10 @@ router.post('/add', async function(req, res){
     res.send(body)
 });
 
+function reorgranizePayload(data){
+    
+}
+
 // 4 Update project
 router.put('/:id/update', async function(req, res){
     let projectid = req.params.id.toString();

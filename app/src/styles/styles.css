@@ -1,6 +1,11 @@
+.background{
+    background: rgb(254,248,246);
+    padding: 50px 0;
+}
+
 /* Sign up */
 
-.background{
+.auth-background{
     height: calc(100vh - 85px);
     background: rgb(254,248,246);
 }
@@ -51,4 +56,59 @@
     margin: auto;
     padding: 5px 10px;
     width: 300px;
+}
+
+/* Create project */
+
+.add-milestone-button{
+    padding: 20px 40px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.create-button{
+    margin: 50px auto;
+    padding: 20px 40px;
+    text-align: center;
+    width: 130px;
+}
+
+.milestone-save-button{
+    margin-right: 50px;
+    position: absolute;
+    right: 0;
+}
+
+.milestone-title{
+    text-align: start;
+    padding: 0 50px;
+}
+
+.project-form{
+    background-color: rgba(255,255,255);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 5px;
+    box-shadow: 0 0.5rem 1.5rem 0 rgba(0,0,0,.1);
+    height: fit-content;
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+    top: 10%;
+    width: 80vw;
+}
+
+.project-form-input{
+    padding: 10px;
+    width: 80%;
+}
+
+.project-form-label{
+    width: 20%;
+}
+
+.project-input{
+    display: flex;
+    /*justify-content: space-between;*/
+    padding: 10px 50px;
+    text-align: start;
 }
