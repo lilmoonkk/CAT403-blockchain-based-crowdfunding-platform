@@ -20,15 +20,26 @@ router.get('/projects', async function(req, res){
 router.post('/add', async function(req, res){
     let body = req.body;
     try{
-        projectdb.insertOne(body);
+        let payload = await reorganizePayload(body)
+        //console.log(payload)
+        projectdb.insertOne(payload);
     } catch (err) {
-        console.log("Failed because ${err}");
+        console.log("Failed because", err);
     }
     res.send(body)
 });
 
-function reorgranizePayload(data){
-    
+function reorganizePayload(data){
+    let result = {};
+    for(let i = 0; i<data.milestones.length; i++){
+        data.milestones[i]['seq'] = i+1;
+        data.milestones[i]['fund'] = parseFloat(data.milestones[i]['fund']);
+    }
+    result = {...data.project};
+    result['uid'] = data.uid;
+    result['milestone'] = data.milestones;
+    //delete data.milestones;
+    return result;
 }
 
 // 4 Update project

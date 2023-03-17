@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import '../styles/styles.css';
 import Milestone from '../components/Milestone';
   
@@ -6,19 +6,39 @@ const StartProject = () => {
     const [project, setproject] = useState({
         name: '',
         desc: '',
-        category: '',
+        category: 'tech&innovation',
         location: '',
         image: '',
         video: '',
-        totalfund: ''
+        totalfund: 0.00
     });
     const [milestones, setmilestones] = useState([]);
     const [numMilestone, setnumMilestone] = useState(1);
 
+    useEffect(() => {
+        const updateTotalFund = () => {
+            let result = 0
+            for(let i=0; i<milestones.length; i++){
+                console.log(milestones[i].fund)
+                result += parseFloat(milestones[i].fund)
+            }
+            
+            setproject((prevState) => {
+                return({
+                  ...prevState,
+                  totalfund: result.toFixed(3)
+                });
+            });
+        }
+
+        updateTotalFund()
+    }, [milestones]);
+    
+
     const handleSubmit = async(e) =>{
         e.preventDefault()
-        console.log(milestones)
-        /*const res = await fetch('/project/add',{
+        
+        const res = await fetch('/project/add',{
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -29,7 +49,7 @@ const StartProject = () => {
         }).catch(error => alert(error.message));
         if(res.ok){
             //window.location.replace('/')
-        }*/
+        }
       
         
     }
@@ -48,9 +68,6 @@ const StartProject = () => {
 
     const handleMilestonesChange = (index, data) => {
         setmilestones((prevData) => {
-            if(!data['seq']){
-                data['seq'] = index+1; 
-            }
             const newData = [...prevData];
             newData[index] = data;
             return newData;
@@ -85,7 +102,7 @@ const StartProject = () => {
                     <><p className='milestone-title'>Milestone {index+1}</p><Milestone key={index} onChange={(data) => handleMilestonesChange(index, data)} /></>))}
                     <button className='add-milestone-button' onClick={addMilestone}>Add Milestone</button>
                 </div>
-                
+                <p className='total-fund-text'>Total fund: {project.totalfund} ETH</p>
                 <button className='create-button' onClick={handleSubmit}>Create</button>
             </div>
         </div>

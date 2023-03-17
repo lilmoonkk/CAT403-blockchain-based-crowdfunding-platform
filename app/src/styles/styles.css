@@ -61,7 +61,7 @@
 /* Create project */
 
 .add-milestone-button{
-    padding: 20px 40px;
+    padding: 10px 20px;
     text-align: center;
     margin-top: 20px;
 }
@@ -111,4 +111,8 @@
     /*justify-content: space-between;*/
     padding: 10px 50px;
     text-align: start;
+}
+
+.total-fund-text{
+    font-weight: bold;
 }
