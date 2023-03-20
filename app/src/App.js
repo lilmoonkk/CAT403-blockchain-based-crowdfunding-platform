@@ -6,6 +6,8 @@ import SignUp from './views/SignUp';
 import ConnectWallet from './views/ConnectWallet';
 import Login from './views/Login';
 import StartProject from './views/StartProject';
+import Explore from './views/Explore';
+import Project from './views/Project';
 
 function App() {
   return (
@@ -18,7 +20,9 @@ function App() {
           <Route path="connect-wallet" element={<ConnectWallet />}/>{}
         </Route>
         <Route path="login" element={<Login />}/>
-        <Route path="/start-a-project" element={<StartProject  />}/>
+        <Route path="start-a-project" element={<StartProject  />}/>
+        <Route path="explore" element={<Explore  />}/>
+        <Route path="project/:projectid" element={<Project  />}/>
       </Routes>
     </Router>
   );

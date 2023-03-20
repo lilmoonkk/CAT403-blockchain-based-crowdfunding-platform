@@ -1,5 +1,17 @@
+/*
+    1.0 General
+    2.0 Sign up
+    3.0 Connect wallet
+    4.0 Create project
+    5.0 Explore
+*/
+
+
+/* General */
+
 .background{
     background: rgb(254,248,246);
+    min-height: calc(100vh - 185px);
     padding: 50px 0;
 }
 
@@ -115,4 +127,57 @@
 
 .total-fund-text{
     font-weight: bold;
+}
+
+/* Explore */
+
+.card{
+    background-color: rgba(255,255,255);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 5px;
+    box-shadow: 0 0.5rem 1.5rem 0 rgba(0,0,0,.1);
+    height: 500px;
+    margin: 30px;
+    width: calc(50% - 70px);
+}
+
+.card a{
+    color: black;
+    text-decoration: none;
+}
+
+.cards-container{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card-image{
+    height: 200px;
+}
+
+.card-text{
+    padding: 20px;
+}
+
+/* Project */
+
+.divider-line{
+    flex: 1;
+    height: 1px;
+    background: black;
+}
+
+#project{
+    padding: 50px 30px;
+}
+
+.project-img{
+    height: 300px;
+    margin: unset;
+    margin-right: 30px;
+    width: 500px;
+}
+
+.project-general{
+    display: flex;
 }

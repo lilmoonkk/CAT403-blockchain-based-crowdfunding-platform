@@ -6,7 +6,7 @@ return (
 	<>
 	<Nav>
 		<NavMenu>
-		<NavLink to="/" activeStyle>
+		<NavLink to="/explore" activeStyle>
 			Explore
 		</NavLink>
 		<NavLink to="/start-a-project" activeStyle>

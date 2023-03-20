@@ -16,6 +16,19 @@ router.get('/projects', async function(req, res){
     res.send(body);
 });
 
+router.get('/:link', async function(req, res){
+    let projectid = req.params.link.toString();
+    let query = { link : projectid };
+    try{
+        //projectdb.updateOne(query, update);
+        //After approval, smart contract for the project is created
+        const body = await projectdb.findOne(query);
+        res.send(body)
+    } catch (err) {
+        console.log("Failed because", err);
+    }
+});
+
 // 3 Add project
 router.post('/add', async function(req, res){
     let body = req.body;
@@ -38,6 +51,7 @@ function reorganizePayload(data){
     result = {...data.project};
     result['uid'] = data.uid;
     result['milestone'] = data.milestones;
+    result['link'] = data.name.toLowerCase().replace(/\s+/g, '-');
     //delete data.milestones;
     return result;
 }
