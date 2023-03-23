@@ -4,7 +4,7 @@ const Milestone = (props) => {
     const [milestone, setmilestone] = useState({
         title: "",
         desc: "",
-        fund: 0,
+        amount: 0,
         percentage: 0
     });
 
@@ -31,7 +31,7 @@ const Milestone = (props) => {
             </div>
             <div className="project-input">
                 <label className="project-form-label">Fund needed (ETH)</label>
-                <input className="project-form-input" type="number" name="fund" id="fund" value={milestone.fund} onChange={handleInputChange}/>
+                <input className="project-form-input" type="number" name="amount" id="amount" value={milestone.amount} onChange={handleInputChange}/>
             </div>
             <button className="milestone-save-button" onClick={handleSave}>Save</button>
         </form>

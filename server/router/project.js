@@ -46,7 +46,7 @@ function reorganizePayload(data){
     let result = {};
     for(let i = 0; i<data.milestones.length; i++){
         data.milestones[i]['seq'] = i+1;
-        data.milestones[i]['fund'] = parseFloat(data.milestones[i]['fund']);
+        data.milestones[i]['amount'] = parseFloat(data.milestones[i]['amount']);
     }
     result = {...data.project};
     result['uid'] = data.uid;
@@ -89,6 +89,21 @@ router.put('/:id/approve', async function(req, res){
     } catch (err) {
         console.log("Failed because", err);
     }
+});
+
+router.put('/pledge', async function(req, res){
+    let body = req.body;
+    await contract.pledge({contract_address:body.contract_address, caller_address:body.caller_address, pledge:body.pledge});
+    res.sendStatus(200);
+});
+
+router.get('/:id/pledged', async function(req, res){
+    let projectid = req.params.id.toString();
+    let query = { _id : new ObjectId(projectid) };
+    const body = await projectdb.findOne(query, { projection: {contract_address:1}});
+    let result = await contract.getPledged(body.contract_address);
+    console.log(result);
+    res.sendStatus(200);
 });
 
 module.exports = router;
