@@ -45,6 +45,8 @@ const Project = () => {
               method: 'put',
               headers: {'Content-Type': 'application/json'},
               body: JSON.stringify({
+                  uid : project.uid,
+                  projectid : project._id,
                   contract_address: project.contract_address, 
                   caller_address: accounts[0],
                   pledge: pledgeamount

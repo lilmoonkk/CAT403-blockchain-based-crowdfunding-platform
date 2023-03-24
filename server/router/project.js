@@ -7,6 +7,7 @@ const connection = require('../connection')
 const ObjectId = require('mongodb').ObjectId; 
 const database = connection.db('Project');
 const projectdb = database.collection('ProjectDetails');
+const contributiondb = database.collection('Contributions');
 const contract = require('../web3/contract');
 
 // 2 Get all projects
@@ -16,6 +17,7 @@ router.get('/projects', async function(req, res){
     res.send(body);
 });
 
+// 3 Get individual project
 router.get('/:link', async function(req, res){
     let projectid = req.params.link.toString();
     let query = { link : projectid };
@@ -29,7 +31,7 @@ router.get('/:link', async function(req, res){
     }
 });
 
-// 3 Add project
+// 4 Add project
 router.post('/add', async function(req, res){
     let body = req.body;
     try{
@@ -56,7 +58,7 @@ function reorganizePayload(data){
     return result;
 }
 
-// 4 Update project
+// 5 Update project
 router.put('/:id/update', async function(req, res){
     let projectid = req.params.id.toString();
     let body = req.body;
@@ -70,7 +72,7 @@ router.put('/:id/update', async function(req, res){
     res.send(body)
 });
 
-// 5 Approve project
+// 6 Approve project and a smart contract is created
 router.put('/:id/approve', async function(req, res){
     let projectid = req.params.id.toString();
     let query = { _id : new ObjectId(projectid) };
@@ -91,12 +93,38 @@ router.put('/:id/approve', async function(req, res){
     }
 });
 
+// 7 Get individual's projects
+router.get('/:id/projects', async function(req, res){
+    let uid = req.params.id.toString();
+    let query = { uid : uid };
+    try{
+        //projectdb.updateOne(query, update);
+        //After approval, smart contract for the project is created
+        const body = await projectdb.find(query).toArray();
+        res.send(body)
+    } catch (err) {
+        console.log("Failed because", err);
+    }
+});
+
+// 7 Pledge to a project
 router.put('/pledge', async function(req, res){
     let body = req.body;
-    await contract.pledge({contract_address:body.contract_address, caller_address:body.caller_address, pledge:body.pledge});
+    let timestamp = new Date().getTime();
+    await contract.pledge({contract_address:body.contract_address, caller_address:body.caller_address, pledge:body.pledge}, function(value){
+        contributiondb.insertOne({
+            uid: body.uid,
+            projectid: body.projectid,
+            caller_address: body.caller_address,
+            amount: body.pledge,
+            timestamp: timestamp,
+            txhash: value
+        }) 
+    });
     res.sendStatus(200);
 });
 
+// 8 Get total pledge amount to a project
 router.get('/:id/pledged', async function(req, res){
     let projectid = req.params.id.toString();
     let query = { _id : new ObjectId(projectid) };

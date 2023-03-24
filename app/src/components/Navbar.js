@@ -35,7 +35,7 @@ const Auth = () => {
 const Profile = () => {
 	return(
 	<>
-		<NavLink to="/login" activeStyle>
+		<NavLink to="/profile" activeStyle>
 			Profile
 		</NavLink>
 	</>);

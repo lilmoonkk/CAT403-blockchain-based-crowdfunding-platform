@@ -49,13 +49,14 @@ const pledge = (async (req, callback) => {
     await contract.methods.pledge(web3.utils.toWei(String(req.pledge), 'ether')).send({ from: req.caller_address, value: web3.utils.toWei(req.pledge.toString(), 'ether') })
     .on('transactionHash', function(hash){
       console.log("Transaction hash:", hash);
+      callback(hash)
     })
-    .on('confirmation', function(confirmationNumber, receipt){
+    /*.on('confirmation', function(confirmationNumber, receipt){
       //console.log("Confirmation number:", confirmationNumber);
     })
     .on('receipt', function(receipt){
       //console.log("Receipt:", receipt);
-    })
+    })*/
     .on('error', function(error){
       console.error(error);
     });
