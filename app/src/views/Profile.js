@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import Card from '../components/Card';
+import {Tick} from '../components/svg/Tick.jsx'
 import VerticalNav from '../components/VerticalNav';
 import '../styles/styles.css';
 
@@ -50,19 +50,28 @@ const Explore = () => {
     }
 
     return (
-        <div className='background' style={{display: 'flex'}}>
+        <div className='profile-background' style={{display: 'flex'}}>
             <VerticalNav />
-            <div className='cards-container'>
+            <div className='profile-project-container'>
             {projects.map((project) => (
                 <>
-                    <div className='card'>
-                        <img class='card-image' src='../public/logo192.png' alt='projectImage'></img>
-                        <div class='card-text'>
-                            <h3>{project.name}</h3>
-                            <p>{project.desc}</p>
-                            <p>{project.pledged}</p>
+                    <div className='profile-project'>
+                        <img class='profile-project-image' src={project.image} alt='projectImage'></img>
+                        <div class='profile-project-text'>
+                            <div class='profile-project-header'>
+                                <h2>{project.name}</h2>
+                                <p class='profile-project-category'>{project.category}</p>
+                            </div>
+                            <p style={{height: "60px"}}>{project.desc}</p>
+                            <div className='profile-project-comparison'>
+                                <p>{project.pledged} ETH raised / {project.totalfund} ETH</p>
+                                <Tick />
+                            </div>
                             {project.pledged >= project.totalfund&&
-                            (<button onClick={() => handleClaim(project)}>Claim fund of milestone {project.current_mil}</button>)}
+                            (<>
+                                <p style={{fontSize: "0.9em",color: "#808080"}}>You are now eligible to claim fund for milestone {project.current_mil}</p>
+                                <button className='claim-button' onClick={() => handleClaim(project)}>Claim Now</button>
+                            </>)}
                         </div>
                     </div>
                 </>

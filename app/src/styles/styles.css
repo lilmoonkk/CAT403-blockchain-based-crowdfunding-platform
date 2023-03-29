@@ -183,11 +183,75 @@
 }
 
 /* Profile */
+
+.claim-button{
+    background: #4caf50;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+    padding: 8px;
+}
+
+.profile-background{
+
+}
+
+.profile-project{
+    border: 1px solid #ccc;
+    display: flex;
+    height: 230px;
+    margin: 25px 10px;
+    width: 70vw;
+}
+
+.profile-project-category{
+    background: rgb(254,248,246);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9em;
+    height: fit-content;
+    padding: 0 5px;
+    text-align: center;
+    width: fit-content;
+}
+
+.profile-project-container{
+    margin: auto;
+}
+
+.profile-project-image{
+    height: 100%;
+    width: 200px;
+}
+
+.profile-project-header{
+    align-items: center;
+    display: flex;
+}
+
+.profile-project-text{
+    margin-left: 15px;
+}
+
+.profile-project-text h2{
+    margin: 5px 10px 10px 0px;
+}
+
+.profile-project-text p{
+    margin: 5px 0px;
+}
+
+.profile-project-comparison{
+    display: flex;
+    align-items: center;
+}
 /* Vertical Nav */
 .vertical-nav {
     list-style: none;
     /*margin: 0;*/
     padding: 0;
+    text-align: center;
     width: 200px;
 }
   
