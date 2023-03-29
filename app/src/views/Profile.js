@@ -21,6 +21,34 @@ const Explore = () => {
         fetchData()
     }, []);
   
+    const handleClaim = async(project) => {
+        const accounts = await window.ethereum.request({method: 'eth_accounts'});   
+        //console.log('handlepledge acc', accounts)
+
+        if(accounts.length){
+            const res = await fetch('/project/claim',{
+                method: 'put',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    caller_address: accounts[0],
+                    contract_address: project.contract_address, 
+                    milestoneseq:project.current_mil
+                })
+        }).catch(error => alert(error.message));
+        if(res.ok){
+            alert(`You have claimed the fund of milestone ${project.current_mil}!`)
+            //window.location.replace('/')
+        }
+        } else {
+            getAccount()
+        }
+    }
+
+    async function getAccount() {
+        let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        //console.log('getacc acc', accounts)
+    }
+
     return (
         <div className='background' style={{display: 'flex'}}>
             <VerticalNav />
@@ -28,13 +56,14 @@ const Explore = () => {
             {projects.map((project) => (
                 <>
                     <div className='card'>
-                        <a href={`project/${project.link}`}>
-                            <img class='card-image' src='../public/logo192.png' alt='projectImage'></img>
-                            <div class='card-text'>
+                        <img class='card-image' src='../public/logo192.png' alt='projectImage'></img>
+                        <div class='card-text'>
                             <h3>{project.name}</h3>
                             <p>{project.desc}</p>
-                            </div>
-                        </a> 
+                            <p>{project.pledged}</p>
+                            {project.pledged >= project.totalfund&&
+                            (<button onClick={() => handleClaim(project)}>Claim fund of milestone {project.current_mil}</button>)}
+                        </div>
                     </div>
                 </>
             ))}

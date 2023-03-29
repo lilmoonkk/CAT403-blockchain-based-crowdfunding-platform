@@ -54,6 +54,7 @@ function reorganizePayload(data){
     result['uid'] = data.uid;
     result['milestone'] = data.milestones;
     result['link'] = data.name.toLowerCase().replace(/\s+/g, '-');
+    result['current_mil'] = 1;
     //delete data.milestones;
     return result;
 }
@@ -120,6 +121,7 @@ router.put('/pledge', async function(req, res){
             timestamp: timestamp,
             txhash: value
         }) 
+        projectdb.updateOne({ _id : new ObjectId(body.projectid) }, {$inc:{pledged:Number(body.pledge)}});
     });
     res.sendStatus(200);
 });
@@ -131,6 +133,17 @@ router.get('/:id/pledged', async function(req, res){
     const body = await projectdb.findOne(query, { projection: {contract_address:1}});
     let result = await contract.getPledged(body.contract_address);
     console.log(result);
+    res.sendStatus(200);
+});
+
+// 9 CLaim fund from smart contract
+router.put('/claim', async function(req, res){
+    let body = req.body;
+    await contract.claim({contract_address:body.contract_address, caller_address:body.caller_address, milestoneseq:body.milestoneseq}, function(value){
+        console.log('value',value)
+        let timestamp = new Date().getTime();
+        projectdb.updateOne({ 'contract_address':body.contract_address, 'milestone.seq': body.milestoneseq}, { $set: { 'milestone.$.txhash': value, 'milestone.$.timestamp': timestamp } });
+    });
     res.sendStatus(200);
 });
 

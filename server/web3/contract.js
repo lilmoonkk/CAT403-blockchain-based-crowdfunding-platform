@@ -68,8 +68,21 @@ const getPledged = (async (req, callback) => {
     return milestone;
 });
 
+const claim = (async (req, callback) => {
+    const contract = new web3.eth.Contract(abi, req.contract_address);
+    await contract.methods.claim(req.milestoneseq).send({ from: req.caller_address })
+    .on('transactionHash', function(hash){
+      console.log("Transaction hash:", hash);
+      callback(hash)
+    })
+    .on('error', function(error){
+        console.error(error);
+    });
+});
+
 module.exports = {
     createSmartContract,
     pledge,
-    getPledged
+    getPledged,
+    claim
 };
