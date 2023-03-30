@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Card from '../components/Card';
+import ExploreVerticalNav from '../components/ExploreVerticalNav';
 import '../styles/styles.css';
 
 const Explore = () => {
@@ -20,7 +21,8 @@ const Explore = () => {
     }, []);
   
     return (
-        <div className='background'>
+        <div className='profile-background' style={{display: 'flex'}}>
+            <ExploreVerticalNav />
             <div className='cards-container'>
             {projects.map((card) => (
                 <Card key={card._id} body={card} />

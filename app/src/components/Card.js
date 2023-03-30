@@ -5,10 +5,12 @@ const Card = ({ body }) => {
   return (
     <div className='card'>
         <a href={`project/${body.link}`}>
-            <img class='card-image' src='../public/logo192.png' alt='projectImage'></img>
+            <img class='card-image' src={body.image} alt='projectImage'></img>
             <div class='card-text'>
-              <h3>{body.name}</h3>
-              <p>{body.desc}</p>
+              <h2>{body.name}</h2>
+              <p className='profile-project-category'>{body.category}</p>
+              <p className='card-text-desc'>{body.desc}</p>
+              <p>{body.pledged} ETH raised / {body.totalfund} ETH</p>
             </div>
         </a> 
     </div>

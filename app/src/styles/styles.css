@@ -136,9 +136,10 @@
     border: 2px solid rgba(255,255,255,0.1);
     border-radius: 5px;
     box-shadow: 0 0.5rem 1.5rem 0 rgba(0,0,0,.1);
-    height: 500px;
+    height: 450px;
     margin: 30px;
-    width: calc(50% - 70px);
+    /*width: calc(50% - 70px);*/
+    width: 280px;
 }
 
 .card a{
@@ -152,13 +153,23 @@
 }
 
 .card-image{
+    display: block;
     height: 200px;
+    width: 100%;
 }
 
 .card-text{
-    padding: 20px;
+    padding: 0 20px;
 }
 
+.card-text-desc{
+    color: rgb(128, 128, 128);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    height: 65px;
+    overflow: hidden;
+}
 /* Project */
 
 .divider-line{
