@@ -15,6 +15,37 @@
     padding: 50px 0;
 }
 
+/* Home */
+.home-banner{
+    background-image: url(https://i.ibb.co/D5HPn31/plan.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 500px;
+    width: 100%;
+}
+
+.home-caption{
+    display: flex;
+    font-size: 2.5em;
+    justify-content: center;
+    margin: 0;
+    position: relative;
+    top: 35%;
+}
+
+.home-start-project{
+    background: #fff;
+    border-radius: 5px;
+    display: block;
+    font-size: 1em;
+    margin: 0 auto;
+    padding: 10px 20px;
+    position: relative;
+    top: 40%;
+    
+}
+
 /* Sign up */
 
 .auth-background{

@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import '../styles/styles.css';
 import Milestone from '../components/Milestone';
+import {useNavigate} from 'react-router-dom';
   
 const StartProject = () => {
+    const navigate = useNavigate();
     const [project, setproject] = useState({
         name: '',
         desc: '',
@@ -14,6 +16,13 @@ const StartProject = () => {
     });
     const [milestones, setmilestones] = useState([]);
     const [numMilestone, setnumMilestone] = useState(1);
+
+    useEffect(() => {
+        if(!sessionStorage.getItem('uid')){
+            alert(`Oops! You haven't logged in yet. Please log in to continue.`)
+            navigate('/login')
+        }
+    }, []);
 
     useEffect(() => {
         const updateTotalFund = () => {

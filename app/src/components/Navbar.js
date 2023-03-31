@@ -6,6 +6,9 @@ return (
 	<>
 	<Nav>
 		<NavMenu>
+		<NavLink to="/">
+			LETSFUND
+		</NavLink>
 		<NavLink to="/explore" activeStyle>
 			Explore
 		</NavLink>
