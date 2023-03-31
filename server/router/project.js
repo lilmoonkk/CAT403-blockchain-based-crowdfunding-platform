@@ -53,7 +53,7 @@ function reorganizePayload(data){
     result = {...data.project};
     result['uid'] = data.uid;
     result['milestone'] = data.milestones;
-    result['link'] = data.name.toLowerCase().replace(/\s+/g, '-');
+    result['link'] = data.project.name.toLowerCase().replace(/\s+/g, '-');
     result['current_mil'] = 1;
     //delete data.milestones;
     return result;

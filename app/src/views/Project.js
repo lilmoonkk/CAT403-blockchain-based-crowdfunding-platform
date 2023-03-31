@@ -7,6 +7,7 @@ const Project = () => {
     const navigate = useNavigate();
     const [project, setproject] = useState({});
     const [pledgeamount, setpleadgeamount] = useState(0.00);
+    const [myr, setmyr] = useState((0).toFixed(2))
 
     useEffect(() => {
         async function fetchData(){
@@ -68,10 +69,13 @@ const Project = () => {
         
     }
         
-
     async function getAccount() {
         let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         console.log('getacc acc', accounts)
+    }
+
+    const convertEthMyr = (e) => {
+      setmyr((e.target.value * 8000).toFixed(2));
     }
 
     return (
@@ -97,9 +101,13 @@ const Project = () => {
         </div>
         <div>
             <form>
-              <label>Enter your pledge amount (ETH):
-                <input type="number" onChange={(e) => setpleadgeamount(e.target.value)}/>
-              </label>
+              <div style={{display:"flex"}}>
+                <label>Enter your pledge amount (ETH):
+                  <input type="number" onChange={(e) => {setpleadgeamount(e.target.value); convertEthMyr(e)}}/>
+                </label>
+                <p className='conversion-text' style={{margin:"2px 0 0 0"}}> ≈ RM {myr}</p>
+              </div>
+              
             </form>
             <button className='create-button' onClick={handlePledge}>Pledge</button>
         </div>

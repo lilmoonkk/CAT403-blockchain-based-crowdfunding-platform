@@ -16,6 +16,7 @@ const StartProject = () => {
     });
     const [milestones, setmilestones] = useState([]);
     const [numMilestone, setnumMilestone] = useState(1);
+    const [myr, setmyr] = useState((0).toFixed(2))
 
     useEffect(() => {
         if(!sessionStorage.getItem('uid')){
@@ -28,16 +29,18 @@ const StartProject = () => {
         const updateTotalFund = () => {
             let result = 0
             for(let i=0; i<milestones.length; i++){
-                console.log(milestones[i].fund)
-                result += parseFloat(milestones[i].fund)
+                //console.log(milestones[i].amount)
+                result += parseFloat(milestones[i].amount)
             }
             
             setproject((prevState) => {
                 return({
                   ...prevState,
-                  totalfund: result.toFixed(3)
+                  totalfund: result.toFixed(4)
                 });
             });
+            
+            convertEthMyr(result)
         }
 
         updateTotalFund()
@@ -57,7 +60,8 @@ const StartProject = () => {
             })
         }).catch(error => alert(error.message));
         if(res.ok){
-            //window.location.replace('/')
+            alert('Your project have been submitted.')
+            window.location.replace('/')
         }
       
         
@@ -81,6 +85,10 @@ const StartProject = () => {
             newData[index] = data;
             return newData;
         });
+    }
+
+    const convertEthMyr = (amount) => {
+        setmyr((amount * 8000).toFixed(2));
     }
 
     return (
@@ -111,7 +119,10 @@ const StartProject = () => {
                     <><p className='milestone-title'>Milestone {index+1}</p><Milestone key={index} onChange={(data) => handleMilestonesChange(index, data)} /></>))}
                     <button className='add-milestone-button' onClick={addMilestone}>Add Milestone</button>
                 </div>
+                
                 <p className='total-fund-text'>Total fund: {project.totalfund} ETH</p>
+                <p className='conversion-text'> ≈ RM {myr}</p>
+                
                 <button className='create-button' onClick={handleSubmit}>Create</button>
             </div>
         </div>
