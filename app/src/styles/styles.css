@@ -321,3 +321,63 @@
 .vertical-nav li:last-child a {
     border-bottom: none;
 }
+
+/* Contribution */
+.contr-table {
+    /*border-collapse: collapse;
+    border-spacing: 0;*/
+    margin: auto;
+    margin-bottom: 5%;
+    width: 80%;
+}
+
+.contr-table-header{
+    background:#faebd7;
+    display: flex;
+    font-weight: bold;
+    margin: 20px 0 10px;
+    padding: 10px;
+}
+
+.contr-table-row{
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    display: flex;
+    margin: 10px 0;
+    padding: 10px;
+}
+
+.col-project{
+    margin: 0 20px;
+    width: 15%;
+}
+
+.col-project a{
+    color: #000;
+    text-decoration: none;
+}
+
+.col-amount{
+    margin: 0 20px;
+    width: 15%;
+}
+
+.col-tx{
+    margin: 0 20px;
+    width: 45%;
+    word-wrap: break-word;
+}
+
+.col-time{
+    margin: 0 20px;
+    width: 10%;
+}
+
+.total-cont{
+    background: white;
+    border-top: 1px solid #ccc;
+    bottom: 0;
+    padding: 20px;
+    position: fixed;
+    width: 100%;
+}

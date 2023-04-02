@@ -38,7 +38,7 @@ const Auth = () => {
 const Profile = () => {
 	return(
 	<>
-		<NavLink to="/profile" activeStyle>
+		<NavLink to="/created-projects" activeStyle>
 			Profile
 		</NavLink>
 	</>);

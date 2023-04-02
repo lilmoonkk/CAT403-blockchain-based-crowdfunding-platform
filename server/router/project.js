@@ -147,4 +147,48 @@ router.put('/claim', async function(req, res){
     res.sendStatus(200);
 });
 
+router.get('/:uid/contributions', async function(req, res){
+    let uid = req.params.uid.toString();
+    let query = { uid : uid };
+    try{
+        //projectdb.updateOne(query, update);
+        //After approval, smart contract for the project is created
+        //const body = await contributiondb.find(query).toArray();
+        const body = await contributiondb.aggregate([
+            { $match: query },
+            { $addFields: {
+                convertedId: {$toObjectId: "$projectid"}
+            }},
+            { $lookup: {
+                from: "ProjectDetails",
+                localField: "convertedId",
+                foreignField: "_id",
+                as: "result"
+            }},
+            {
+                $project: {
+                  amount: 1,
+                  project_name: { $arrayElemAt: ["$result.name", 0] },
+                  time: { $toDate: ["$timestamp"]  },
+                  txhash: 1,
+                  link: { $arrayElemAt: ["$result.link", 0] }
+                }
+            },
+            {
+                $project: {
+                    amount: 1,
+                    project_name: 1,
+                    time: { "$dateToString": { "format": "%Y-%m-%d %H:%M", "date": "$_id" } },
+                    txhash: 1,
+                    link: 1
+
+                }
+            }
+        ]).toArray();
+        res.send(body)
+    } catch (err) {
+        console.log("Failed because", err);
+    }
+})
+
 module.exports = router;

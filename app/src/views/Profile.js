@@ -56,11 +56,11 @@ const Explore = () => {
             {projects.map((project) => (
                 <>
                     <div className='profile-project'>
-                        <img class='profile-project-image' src={project.image} alt='projectImage'></img>
-                        <div class='profile-project-text'>
-                            <div class='profile-project-header'>
+                        <img className='profile-project-image' src={project.image} alt='projectImage'></img>
+                        <div className='profile-project-text'>
+                            <div className='profile-project-header'>
                                 <h2>{project.name}</h2>
-                                <p class='profile-project-category'>{project.category}</p>
+                                <p className='profile-project-category'>{project.category}</p>
                             </div>
                             <p style={{height: "60px"}}>{project.desc}</p>
                             <div className='profile-project-comparison'>
