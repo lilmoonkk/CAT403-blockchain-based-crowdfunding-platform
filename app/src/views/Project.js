@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import '../styles/styles.css';
 import { useParams, useNavigate } from "react-router-dom"
+import ProgressBar from '../components/ProgressBar';
 
 const Project = () => {
     const params = useParams()
@@ -81,11 +82,15 @@ const Project = () => {
     return (
       <div className='background' id='project'>
         <div className='project-general'>
-            <div className='project-img form'></div>
+            <div className='project-img-container'><img className='project-img' src={project.image} alt='projectImage'></img></div>
             <div>
                 <h1>{project.name}</h1>
+                <p className='profile-project-category'>{project.category}</p>
                 <p>{project.desc}</p>
-                <p>Total fund needed: {project.totalfund} ETH</p>
+                <div>
+                  <p>{project.pledged} ETH raised / {project.totalfund} ETH</p>
+                  <ProgressBar completed={(project.pledged/project.totalfund)*100 > 100 ? 100 : (project.pledged/project.totalfund)*100} />
+                </div>
             </div>
         </div>
         <div style={{width: '200px'}}>
@@ -99,7 +104,7 @@ const Project = () => {
                 </>
             ))}
         </div>
-        <div>
+        <div className='pledge-container'>
             <form>
               <div style={{display:"flex"}}>
                 <label>Enter your pledge amount (ETH):
@@ -107,9 +112,8 @@ const Project = () => {
                 </label>
                 <p className='conversion-text' style={{margin:"2px 0 0 0"}}> ≈ RM {myr}</p>
               </div>
-              
             </form>
-            <button className='create-button' onClick={handlePledge}>Pledge</button>
+            <button className='pledge-button' onClick={handlePledge}>Pledge</button>
         </div>
             
       </div>

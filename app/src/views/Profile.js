@@ -65,7 +65,7 @@ const Explore = () => {
                             <p style={{height: "60px"}}>{project.desc}</p>
                             <div className='profile-project-comparison'>
                                 <p>{project.pledged} ETH raised / {project.totalfund} ETH</p>
-                                <Tick />
+                                {project.pledged >= project.totalfund&&<Tick />}
                             </div>
                             {project.pledged >= project.totalfund&&
                             (<>
