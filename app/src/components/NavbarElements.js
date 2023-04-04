@@ -24,6 +24,16 @@ cursor: pointer;
 }
 `;
 
+export const NavLogOut = styled.div`
+color: #808080;
+display: flex;
+align-items: center;
+text-decoration: none;
+padding: 0 1rem;
+height: 100%;
+cursor: pointer;
+`;
+
 export const NavMenu = styled.div`
 display: flex;
 align-items: center;

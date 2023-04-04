@@ -10,7 +10,6 @@ contract project{
     string projectId;
     address payable company;
     uint goal;
-    uint balance;
     uint pledged;
     struct proof{
         uint id;
@@ -51,8 +50,6 @@ contract project{
     }
 
     function pledge(uint _amount) external payable {
-
-        
         //pledgedAmount[_id][msg.sender] += _amount;
         // transfer fund to smart contract
         pledged += _amount;
@@ -71,8 +68,11 @@ contract project{
         return pledged;
     }
 
+    function getBalance() public view returns (uint){
+        return address(this).balance;
+    }
+
     function claim(uint milestoneseq) external {
-        balance = pledged - milestones[milestoneseq].amount;
         company.transfer(milestones[milestoneseq].amount);
 
         emit Claim();

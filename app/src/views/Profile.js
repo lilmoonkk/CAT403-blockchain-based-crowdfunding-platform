@@ -56,7 +56,7 @@ const Explore = () => {
             {projects.map((project) => (
                 <>
                     <div className='profile-project'>
-                        <img className='profile-project-image' src={project.image} alt='projectImage'></img>
+                        <img className='profile-project-image' src={project.image?project.image:'https://i.ibb.co/RTSNyBH/default.jpg'} alt='projectImage'></img>
                         <div className='profile-project-text'>
                             <div className='profile-project-header'>
                                 <h2>{project.name}</h2>

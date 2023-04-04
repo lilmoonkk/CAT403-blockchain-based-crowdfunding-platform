@@ -12,6 +12,13 @@ const contract = require('../web3/contract');
 
 // 2 Get all projects
 router.get('/projects', async function(req, res){
+    let query = { status : 'Approved' };
+    const body = await projectdb.find(query).toArray();
+    //console.log(body[0].email) //it would output email of first object
+    res.send(body);
+});
+
+router.get('/projects/admin', async function(req, res){
     const body = await projectdb.find({}).toArray();
     //console.log(body[0].email) //it would output email of first object
     res.send(body);
@@ -55,6 +62,7 @@ function reorganizePayload(data){
     result['milestone'] = data.milestones;
     result['link'] = data.project.name.toLowerCase().replace(/\s+/g, '-');
     result['current_mil'] = 1;
+    result['status'] = 'Submitted';
     //delete data.milestones;
     return result;
 }
@@ -80,12 +88,16 @@ router.put('/:id/approve', async function(req, res){
     try{
         //projectdb.updateOne(query, update);
         //After approval, smart contract for the project is created
-        const body = await projectdb.findOne(query, { projection: {milestone:1, wallet_address:1}});
+        const body = await projectdb.findOne(query, { projection: {milestone:1, wallet_address:1, campaign_period: 1}});
         //console.log(body);
         //need to get address from cache
+        
         await contract.createSmartContract({id: projectid, milestone: body.milestone}, function(value){
             //let update = { $set: { Approved: true, contract_address: contractAddr } };
-            projectdb.updateOne(query, { $set: { approved: true, contract_address: value } });
+            const current = new Date().getTime() + 8 * 60 * 60 * 1000;
+            const duration = 1000 * 60 * 60 * 24 * body.campaign_period;
+            const end = current + duration;
+            projectdb.updateOne(query, { $set: { status: 'Approved', start: current, end: end, pledged: 0, contract_address: value } });
         }); //get projectid, milestone and wallet address and fing variable for array of objects
         
         res.sendStatus(200);
@@ -111,7 +123,7 @@ router.get('/:id/projects', async function(req, res){
 // 7 Pledge to a project
 router.put('/pledge', async function(req, res){
     let body = req.body;
-    let timestamp = new Date().getTime();
+    let timestamp = new Date().getTime() + 8 * 60 * 60 * 1000;
     await contract.pledge({contract_address:body.contract_address, caller_address:body.caller_address, pledge:body.pledge}, function(value){
         contributiondb.insertOne({
             uid: body.uid,
@@ -132,8 +144,18 @@ router.get('/:id/pledged', async function(req, res){
     let query = { _id : new ObjectId(projectid) };
     const body = await projectdb.findOne(query, { projection: {contract_address:1}});
     let result = await contract.getPledged(body.contract_address);
-    console.log(result);
-    res.sendStatus(200);
+    //console.log(result);
+    res.send(result);
+});
+
+// 8 Get balance of a project
+router.get('/:id/balance', async function(req, res){
+    let projectid = req.params.id.toString();
+    let query = { _id : new ObjectId(projectid) };
+    const body = await projectdb.findOne(query, { projection: {contract_address:1}});
+    let result = await contract.getBalance(body.contract_address);
+    //console.log(result);
+    res.send(result);
 });
 
 // 9 CLaim fund from smart contract
@@ -141,7 +163,7 @@ router.put('/claim', async function(req, res){
     let body = req.body;
     await contract.claim({contract_address:body.contract_address, caller_address:body.caller_address, milestoneseq:body.milestoneseq}, function(value){
         console.log('value',value)
-        let timestamp = new Date().getTime();
+        let timestamp = new Date().getTime() + 8 * 60 * 60 * 1000;
         projectdb.updateOne({ 'contract_address':body.contract_address, 'milestone.seq': body.milestoneseq}, { $set: { 'milestone.$.txhash': value, 'milestone.$.timestamp': timestamp } });
     });
     res.sendStatus(200);
@@ -178,7 +200,7 @@ router.get('/:uid/contributions', async function(req, res){
                 $project: {
                     amount: 1,
                     project_name: 1,
-                    time: { "$dateToString": { "format": "%Y-%m-%d %H:%M", "date": "$_id" } },
+                    time: { "$dateToString": { "format": "%Y-%m-%d %H:%M", "timezone" : "+08:00", "date": "$_id" } },
                     txhash: 1,
                     link: 1
 

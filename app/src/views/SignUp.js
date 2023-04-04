@@ -17,7 +17,7 @@ const SignUp = () => {
     return (
         <div className="auth-background">
             <div className="form">
-                <h1>Sign In</h1>
+                <h1>Sign Up</h1>
                 <form className="form-body">
                     <div className="input">
                         <input className="form-input" type="text" id="firstName" placeholder="First Name" onChange={(e) => setfname(e.target.value)}/>

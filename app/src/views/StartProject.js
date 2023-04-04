@@ -12,6 +12,7 @@ const StartProject = () => {
         location: '',
         image: '',
         video: '',
+        campaign_period: 0,
         totalfund: 0.00
     });
     const [milestones, setmilestones] = useState([]);
@@ -112,6 +113,11 @@ const StartProject = () => {
                             <option value='communityprojects'>Community Projects</option>
                         </select>
                     </div>
+                    <div className='project-input'>
+                        <label className='project-form-label'>Campaign period (day)</label>
+                        <input className="project-form-input" type='number' min='0' name='campaign_period' id='campaign_period' value={project.campaign_period} onChange={handleInputChange}/>
+                    </div>
+                    <p className='conversion-text'>* Your campaign will be started after admin has approved your submission.</p>
                 </form>
                 <div>
                     <h3 className='milestone-title'>Milestones</h3>

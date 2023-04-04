@@ -64,8 +64,14 @@ const pledge = (async (req, callback) => {
 
 const getPledged = (async (req, callback) => {
     const contract = new web3.eth.Contract(abi, req);
-    let milestone = await contract.methods.getPledged().call();
-    return milestone;
+    let pledged = await contract.methods.getPledged().call();
+    return Web3.utils.fromWei(pledged, 'ether');;
+});
+
+const getBalance = (async (req, callback) => {
+    const contract = new web3.eth.Contract(abi, req);
+    let balance = await contract.methods.getBalance().call();
+    return Web3.utils.fromWei(balance, 'ether');;
 });
 
 const claim = (async (req, callback) => {
@@ -84,5 +90,6 @@ module.exports = {
     createSmartContract,
     pledge,
     getPledged,
+    getBalance,
     claim
 };

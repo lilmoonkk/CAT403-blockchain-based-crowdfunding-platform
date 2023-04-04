@@ -82,7 +82,7 @@ const Project = () => {
     return (
       <div className='background' id='project'>
         <div className='project-general'>
-            <div className='project-img-container'><img className='project-img' src={project.image} alt='projectImage'></img></div>
+            <div className='project-img-container'><img className='project-img' src={project.image?project.image:'https://i.ibb.co/RTSNyBH/default.jpg'} alt='projectImage'></img></div>
             <div>
                 <h1>{project.name}</h1>
                 <p className='profile-project-category'>{project.category}</p>

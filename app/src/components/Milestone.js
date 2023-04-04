@@ -36,7 +36,7 @@ const Milestone = (props) => {
             </div>
             <div className="project-input">
                 <label className="project-form-label">Fund needed (ETH)</label>
-                <input className="project-form-input" style={{width:"30%"}} type="number" name="amount" id="amount" value={milestone.amount} onChange={e => { handleInputChange(e); convertEthMyr(e) }}/>
+                <input className="project-form-input" style={{width:"30%"}} type="number" min="0" name="amount" id="amount" value={milestone.amount} onChange={e => { handleInputChange(e); convertEthMyr(e) }}/>
                 <p className='conversion-text'> ≈ RM {myr}</p>
             </div>
             <button className="milestone-save-button" onClick={handleSave}>Save</button>
