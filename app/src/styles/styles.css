@@ -315,6 +315,11 @@
     display: flex;
 }
 
+.profile-project-header a{
+    color: unset;
+    text-decoration: none;
+}
+
 .profile-project-text{
     margin-left: 15px;
 }

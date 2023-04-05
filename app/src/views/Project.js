@@ -79,6 +79,10 @@ const Project = () => {
       setmyr((e.target.value * 8000).toFixed(2));
     }
 
+    const convertMyrEth = (e) => {
+      setpleadgeamount(e.target.value / 8000);
+    }
+
     return (
       <div className='background' id='project'>
         <div className='project-general'>
@@ -107,10 +111,11 @@ const Project = () => {
         <div className='pledge-container'>
             <form>
               <div style={{display:"flex"}}>
-                <label>Enter your pledge amount (ETH):
-                  <input type="number" onChange={(e) => {setpleadgeamount(e.target.value); convertEthMyr(e)}}/>
-                </label>
-                <p className='conversion-text' style={{margin:"2px 0 0 0"}}> ≈ RM {myr}</p>
+                <label>Enter your pledge amount (ETH):</label>
+                <input type="number" value={pledgeamount} onChange={(e) => {setpleadgeamount(e.target.value); convertEthMyr(e)}}/>
+                <div style={{margin:"0 10px"}}>≈ RM</div>
+                <input type="number" value={myr} onChange={(e) => {setmyr(e.target.value); convertMyrEth(e)}}/>
+                
               </div>
             </form>
             <button className='pledge-button' onClick={handlePledge}>Pledge</button>

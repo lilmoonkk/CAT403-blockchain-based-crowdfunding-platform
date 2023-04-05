@@ -59,12 +59,12 @@ const Explore = () => {
                         <img className='profile-project-image' src={project.image?project.image:'https://i.ibb.co/RTSNyBH/default.jpg'} alt='projectImage'></img>
                         <div className='profile-project-text'>
                             <div className='profile-project-header'>
-                                <h2>{project.name}</h2>
+                                <h2><a href={`project/${project.link}`}>{project.name}</a></h2>
                                 <p className='profile-project-category'>{project.category}</p>
                             </div>
                             <p style={{height: "60px"}}>{project.desc}</p>
                             <div className='profile-project-comparison'>
-                                <p>{project.pledged} ETH raised / {project.totalfund} ETH</p>
+                                <p>{project.pledged?project.pledged:0} ETH raised / {project.totalfund} ETH</p>
                                 {project.pledged >= project.totalfund&&<Tick />}
                             </div>
                             {project.pledged >= project.totalfund&&

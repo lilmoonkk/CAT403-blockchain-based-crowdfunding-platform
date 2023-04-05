@@ -37,7 +37,7 @@ const StartProject = () => {
             setproject((prevState) => {
                 return({
                   ...prevState,
-                  totalfund: result.toFixed(4)
+                  totalfund: result.toFixed(5)
                 });
             });
             
