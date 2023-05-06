@@ -3,7 +3,7 @@ import {Tick} from '../components/svg/Tick.jsx'
 import VerticalNav from '../components/VerticalNav';
 import '../styles/styles.css';
 
-const Explore = () => {
+const Profile = () => {
     const [projects, setprojects] = useState([]);
     
     useEffect(() => {
@@ -67,7 +67,7 @@ const Explore = () => {
                                 <p>{project.pledged?project.pledged:0} ETH raised / {project.totalfund} ETH</p>
                                 {project.pledged >= project.totalfund&&<Tick />}
                             </div>
-                            {project.pledged >= project.totalfund&&
+                            {project.status == 'Claimable'&&
                             (<>
                                 <p style={{fontSize: "0.9em",color: "#808080"}}>You are now eligible to claim fund for milestone {project.current_mil}</p>
                                 <button className='claim-button' onClick={() => handleClaim(project)}>Claim Now</button>
@@ -81,4 +81,4 @@ const Explore = () => {
     );
   };
   
-  export default Explore;
+  export default Profile;

@@ -3,12 +3,60 @@
 // 1 Initialization
 var express = require('express');
 var router = express.Router();
+var schedule = require('node-schedule');
 const connection = require('../connection')
 const ObjectId = require('mongodb').ObjectId; 
 const database = connection.db('Project');
 const projectdb = database.collection('ProjectDetails');
 const contributiondb = database.collection('Contributions');
 const contract = require('../web3/contract');
+
+/*var date = new Date(new Date().getTime() +10000);
+console.log(date)
+var j = schedule.scheduleJob(date, function(){
+  console.log('job is running');
+});
+var date = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
+console.log(date)
+var date = new Date(2012, 11, 21, 5, 30, 0);
+console.log(date)
+var date = new Date().getTime();
+console.log(date)
+*/
+const rule = new schedule.RecurrenceRule();
+rule.hour = 0;
+rule.minute = 0;
+//rule.second = null;
+rule.tz = 'Asia/Kuala_Lumpur'
+
+//Create the job with Malaysia timezone
+const job = schedule.scheduleJob(rule, async function(){
+    console.log('This job runs every day at 9:00 AM in Malaysia timezone.');
+    let query = { status : 'Approved' };
+    const body = await projectdb.find(query).toArray();
+    
+    body.forEach(element => {
+        var day = 24 * 60 * 60 * 1000;
+        var now = new Date().getTime() + 8 * 60 * 60 * 1000;
+        var end = new Date(element.end)
+        console.log(now - element.end )
+        if( now - element.end > day ){
+            let query = { _id : element._id };
+            let update
+            if(element.totalfund <= element.pledged){
+                update = { $set: { status: 'Claimable' } };
+            } else {
+                update = { $set: { status: 'Unsuccessful' } };
+            }
+            try{
+                projectdb.updateOne(query, update);
+            } catch (err) {
+                console.log("Failed because", err);
+            }
+        }
+    });
+});
+
 
 // 2 Get all projects
 router.get('/projects', async function(req, res){
