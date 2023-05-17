@@ -86,10 +86,23 @@ const claim = (async (req, callback) => {
     });
 });
 
+const transfer = (async (req, callback) => {
+    const contract = new web3.eth.Contract(abi, req.contract_address);
+    await contract.methods.transferFund(req.revaddress, web3.utils.toWei(String(req.amount), 'ether')).send({ from: req.caller_address})
+    .on('transactionHash', function(hash){
+      console.log("Transaction hash:", hash);
+      callback(hash)
+    })
+    .on('error', function(error){
+        console.error(error);
+    });
+});
+
 module.exports = {
     createSmartContract,
     pledge,
     getPledged,
     getBalance,
-    claim
+    claim,
+    transfer
 };

@@ -4,6 +4,7 @@ pragma solidity >=0.4.22 <0.9.0;
 contract project{
     event Pledge(address indexed caller, uint amount);
     event Unpledge(address indexed target, uint amount);
+    event Transfer(address indexed target, uint amount);
     event Claim();
     enum State {completed, approved, notCompleted, notApproved}
     //State state;
@@ -62,6 +63,14 @@ contract project{
         backer.transfer(_amount);
 
         emit Unpledge(backer, _amount);
+    }
+
+    function transferFund(address payable backer, uint _amount) external {
+        require(address(this).balance >= _amount);
+        pledged -= _amount;
+        backer.transfer(_amount);
+
+        emit Transfer(backer, _amount);
     }
 
     function getPledged() public view returns (uint){
