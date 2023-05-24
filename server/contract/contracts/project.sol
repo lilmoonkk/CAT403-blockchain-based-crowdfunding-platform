@@ -13,7 +13,7 @@ contract project{
     uint goal;
     uint pledged;
     struct proof{
-        uint id;
+        string id;
         string signature;
     }
     //Ori
@@ -79,6 +79,10 @@ contract project{
 
     function getBalance() public view returns (uint){
         return address(this).balance;
+    }
+
+    function getProof() public view returns (proof[] memory){
+        return proofs[1];
     }
 
     function claim(uint milestoneseq) external {

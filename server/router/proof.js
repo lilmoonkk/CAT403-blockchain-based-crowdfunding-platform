@@ -27,7 +27,8 @@ router.post('/add', upload.array('images', 10), async function(req, res){
     //console.log(req.body)
     
     try{
-        let imagesUrl = []
+        const promises = [];
+        let imagesId = []
         let imagesHash = []
         images.forEach(element => {
             //console.log(element.buffer)
@@ -35,20 +36,25 @@ router.post('/add', upload.array('images', 10), async function(req, res){
             // Step 1. Create reference for file name in cloud storage 
             const imageRef = ref(storage, 'proofs/'+element.originalname);
             // Step 2. Upload the file in the bucket storage
-            uploadBytes(imageRef, element.buffer).then((snapshot) => {
-                console.log('Uploaded a blob or file!');
-                //console.log(snapshot)
-                // Step 3. Grab the public url
-                // Get the download URL
-                getDownloadURL(imageRef)
-                .then((url) => {
-                // Insert url into an <img> tag to "download"
-                    console.log(url)
-                    imagesUrl.push(url);
-                })
-                
-              });
+            const p = uploadBytes(imageRef, element.buffer)
+            .then(() => {
+                return getDownloadURL(imageRef);
+            })
+            .then(url => {
+                let payload = {
+                    projectid: body.projectid,
+                    imageUrl: url,
+                    timestamp: new Date().getTime() + 8 * 60 * 60 * 1000
+                };
+
+                return proofdb.insertOne(payload);
+            })
+            .then(result => {
+                imagesId.push(result.insertedId.toString());
+            });
             
+            promises.push(p);
+
             // Create a hash object
             const hash = crypto.createHash('sha256');
 
@@ -62,27 +68,33 @@ router.post('/add', upload.array('images', 10), async function(req, res){
             
         })
         
-        //Store proof to database
-        let payload = {
-            projectid : body.projectid,
-            imageUrl : imagesUrl,
-            timestamp : new Date().getTime() + 8 * 60 * 60 * 1000
-        }
+        
 
-        proofdb.insertOne(payload);
-
-        //Organize proof payload for chain
-        let payloadchain = []
-        for (let i = 0; i < imagesHash.length; i++){
-            payloadchain.push([i+1, imagesHash[i]])
-        }
-        //Store proof on chain
-        await contract.uploadProof({contract_address: body.contract_address, owner_address: body.owner_address, milestone: body.milestone, proofs: payloadchain}, function(value){
-            let update = { $set: { status: 'Waiting for proof approval'} };
-            let query = { _id : new ObjectId(body.projectid) };
-            projectdb.updateOne(query, update);
-            console.log('txhash',value)
-        });
+        Promise.all(promises)
+        .then(() => {
+            let payloadchain = []
+            for (let i = 0; i < imagesHash.length; i++){
+                payloadchain.push([imagesId[i], imagesHash[i]])
+            }
+            console.log('payloadchain',payloadchain)
+            return Promise.all([
+            Promise.resolve(imagesId),
+            contract.uploadProof(
+                {
+                contract_address: body.contract_address,
+                owner_address: body.owner_address,
+                milestone: body.milestone,
+                proofs: payloadchain
+                },
+                function (value) {
+                let update = { $set: { status: 'Waiting for proof approval' } };
+                let query = { _id: new ObjectId(body.projectid) };
+                projectdb.updateOne(query, update);
+                console.log('txhash', value);
+                }
+            )
+            ]);
+        })
         /*
             1. Reorganize payload
             2. MOdify smart contract change uint to string for id
@@ -98,13 +110,6 @@ router.post('/add', upload.array('images', 10), async function(req, res){
     
 });
 
-function reorganizeImagesPayload(body){
-    let result = {}
 
-    result = {...body};
-    result['timestamp'] = new Date().getTime() + 8 * 60 * 60 * 1000;
-
-    return result
-}
 
 module.exports = router;
