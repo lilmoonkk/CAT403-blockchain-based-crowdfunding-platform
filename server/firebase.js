@@ -61,6 +61,7 @@ const isLoggedIn = () => {
 }
 
 module.exports = {
+    app,
     createUser,
     signInUser,
     signOutUser,

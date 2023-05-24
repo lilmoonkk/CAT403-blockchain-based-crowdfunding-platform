@@ -15,8 +15,10 @@ const Login = () => {
             })
         }).catch(error => alert(error.message));
         if(res.ok){
-            const data = await res.text();
-            sessionStorage.setItem('uid', data);
+            const data = await res.json();
+            //If single value, use res.text()
+            sessionStorage.setItem('uid', data.uid);
+            sessionStorage.setItem('wallet_address', data.wallet_address);
             window.location.replace('/')
         }
         

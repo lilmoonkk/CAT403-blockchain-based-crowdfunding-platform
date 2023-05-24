@@ -42,9 +42,10 @@ router.post('/login', async function(req, res){
     let body = req.body;
     //console.log(body)
     try{
-        await firebase.signInUser(body.email, body.password, function(value){
+        await firebase.signInUser(body.email, body.password, async function(value){
             //insert uid to database along with other data
-            res.send(value);
+            const body = await userdb.findOne({ _id : value }, {projection: {wallet_address: 1}});
+            res.send({uid: value, wallet_address: body.wallet_address});
         });
     } catch (err) {
         console.log("Failed because ",err);

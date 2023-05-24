@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Tick} from '../components/svg/Tick.jsx'
 import VerticalNav from '../components/VerticalNav';
+import ImageUpload from '../components/ImageUpload';
 import '../styles/styles.css';
 
 const Profile = () => {
@@ -74,6 +75,7 @@ const Profile = () => {
                             </>)}
                         </div>
                     </div>
+                    <ImageUpload project={project}></ImageUpload>
                 </>
             ))}
             </div>
