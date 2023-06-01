@@ -44,7 +44,8 @@ router.post('/add', upload.array('images', 10), async function(req, res){
                 let payload = {
                     projectid: body.projectid,
                     imageUrl: url,
-                    timestamp: new Date().getTime() + 8 * 60 * 60 * 1000
+                    timestamp: new Date().getTime() + 8 * 60 * 60 * 1000,
+                    milestone: body.milestone
                 };
 
                 return proofdb.insertOne(payload);
@@ -108,6 +109,24 @@ router.post('/add', upload.array('images', 10), async function(req, res){
     }
     //res.send(body)
     
+});
+
+router.get('/:id/proofs', async function(req, res){
+    let pid = req.params.id.toString();
+    let query = { projectid : pid };
+    try{
+        //projectdb.updateOne(query, update);
+        //After approval, smart contract for the project is created
+        const body = await proofdb.find(query).toArray();
+        let result = {}
+        body.forEach(element => {
+            result[element.milestone] = result[element.milestone] || [];
+            result[element.milestone].push(element);
+        })
+        res.send(result)
+    } catch (err) {
+        console.log("Failed because", err);
+    }
 });
 
 

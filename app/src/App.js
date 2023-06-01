@@ -10,6 +10,7 @@ import Explore from './views/Explore';
 import Project from './views/Project';
 import Profile from './views/Profile';
 import Contribution from './views/Contribution';
+import UploadProof from './views/UploadProof';
 
 function App() {
   return (
@@ -25,7 +26,10 @@ function App() {
         <Route path="start-a-project" element={<StartProject  />}/>
         <Route path="explore" element={<Explore  />}/>
         <Route path="project/:projectid" element={<Project  />}/>
-        <Route path="created-projects" element={<Profile  />}/>
+        <Route path="created-projects">
+          <Route index element={<Profile />} />
+          <Route path=":projectid/proofs" element={<UploadProof  />}/>
+        </Route>
         <Route path="contributions" element={<Contribution  />}/>
       </Routes>
     </Router>

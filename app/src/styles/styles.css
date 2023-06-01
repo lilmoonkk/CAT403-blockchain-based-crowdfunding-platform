@@ -322,6 +322,7 @@
 
 .profile-project-text{
     margin-left: 15px;
+    width: 100%;
 }
 
 .profile-project-text h2{
@@ -336,6 +337,27 @@
     display: flex;
     align-items: center;
 }
+
+.profile-proof-button{
+    align-items: center;
+    background-color: #fa6400;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 16px;
+    font-weight: 400;
+    height: fit-content;
+    justify-content: center;
+    line-height: 1.25;
+    margin: 10px;
+    padding: calc(0.875rem - 6px) calc(1.5rem - 2px);
+    position: relative;
+    width: auto;
+}
+
 /* Vertical Nav */
 .vertical-nav {
     list-style: none;
@@ -420,4 +442,33 @@
     padding: 20px;
     position: fixed;
     width: 100%;
+}
+
+/* Upload Proof */
+
+.file-upload-div{
+    align-items: center;
+    border: 2px #c3c3c3 dashed;
+    border-radius: 12px;
+    color: #555555;
+    display: flex;
+    flex-flow: column nowrap;
+    height: 200px;
+    justify-content: center;
+    padding: 50px;    
+    width: 300px;
+}
+
+.proof-bg{
+    margin: 4% 5%;
+}
+
+.proof-img{
+    height: 200px;
+}
+
+.upload-proof-bg-clicked{
+}
+
+.upload-proof-bg-unclicked{
 }

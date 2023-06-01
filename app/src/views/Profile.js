@@ -3,6 +3,7 @@ import {Tick} from '../components/svg/Tick.jsx'
 import VerticalNav from '../components/VerticalNav';
 import ImageUpload from '../components/ImageUpload';
 import '../styles/styles.css';
+import {Link} from 'react-router-dom';
 
 const Profile = () => {
     const [projects, setprojects] = useState([]);
@@ -74,8 +75,8 @@ const Profile = () => {
                                 <button className='claim-button' onClick={() => handleClaim(project)}>Claim Now</button>
                             </>)}
                         </div>
+                        <button className='profile-proof-button'><Link style={{textDecoration: "none", color: "#fff"}} to={{ pathname: `${project._id}/proofs`}} state= {{project:project}} >Proof</Link></button>
                     </div>
-                    <ImageUpload project={project}></ImageUpload>
                 </>
             ))}
             </div>
