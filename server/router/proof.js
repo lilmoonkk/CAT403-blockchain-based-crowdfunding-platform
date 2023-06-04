@@ -118,11 +118,23 @@ router.get('/:id/proofs', async function(req, res){
         //projectdb.updateOne(query, update);
         //After approval, smart contract for the project is created
         const body = await proofdb.find(query).toArray();
+        const projectbody = await projectdb.findOne({ _id : new ObjectId(pid) }, {projection: {milestone: 1}})
+        const milestone = projectbody.milestone
         let result = {}
         body.forEach(element => {
             result[element.milestone] = result[element.milestone] || [];
             result[element.milestone].push(element);
         })
+        result[0] = [] //to record approval of each milestone
+        for (let i=0; i<milestone.length; i++){
+            if(!result[i+1]){
+                break
+            }
+            if(milestone[i].approved){
+                //console.log(milestone[i].approved)
+                result[0].push(milestone[i].approved)
+            }
+        }
         res.send(result)
     } catch (err) {
         console.log("Failed because", err);

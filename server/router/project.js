@@ -195,7 +195,9 @@ router.get('/:uid/contributions', async function(req, res){
                   project_name: { $arrayElemAt: ["$result.name", 0] },
                   time: { $toDate: ["$timestamp"]  },
                   txhash: 1,
-                  link: { $arrayElemAt: ["$result.link", 0] }
+                  link: { $arrayElemAt: ["$result.link", 0] },
+                  projectid: 1,
+                  milestone: { $arrayElemAt: ["$result.milestone", 0] }
                 }
             },
             {
@@ -204,7 +206,9 @@ router.get('/:uid/contributions', async function(req, res){
                     project_name: 1,
                     time: { "$dateToString": { "format": "%Y-%m-%d %H:%M", "timezone" : "+08:00", "date": "$_id" } },
                     txhash: 1,
-                    link: 1
+                    link: 1,
+                    projectid: 1,
+                    milestone: 1
 
                 }
             }

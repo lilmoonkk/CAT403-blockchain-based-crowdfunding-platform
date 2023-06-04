@@ -459,12 +459,69 @@
     width: 300px;
 }
 
+.pending-proof-container{
+    background-color: #f0f1f2;
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 5px;
+    box-shadow: 0 0.5rem 1.5rem 0 rgba(0,0,0,.1);
+    margin-bottom: 20px;
+    padding: 0 30px 10px;
+    text-align: center;
+}
+
 .proof-bg{
-    margin: 4% 5%;
+    background: #fff;
+    min-height: calc(100vh - 185px);
+    padding: 30px 0 60px;
+}
+
+.proof-container{
+    margin: 0 auto;
+    position: relative;
+    top: 10%;
+    width: 80vw;
 }
 
 .proof-img{
+    border: 1px solid;
     height: 200px;
+}
+
+.proof-img-container{
+    height: 200px;
+    margin: 0 15px;
+}
+
+.proof-img-row-container{
+    display: flex;
+}
+
+.milestone-complete-text{
+    background-color: #4caf50;
+}
+
+.proof-button{
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+    color: #fff;
+    box-sizing: border-box;
+    display: inline-flex;
+    font-size: 16px;
+    font-weight: 400;
+    height: fit-content;
+    justify-content: center;
+    line-height: 1.25;
+    margin: 10px;
+    padding: calc(0.875rem - 6px) calc(1.5rem - 2px);
+    position: relative;
+    width: auto;
+}
+
+.approve-button{
+    width: 110px;
+    background-color: #4caf50;
 }
 
 .upload-proof-bg-clicked{

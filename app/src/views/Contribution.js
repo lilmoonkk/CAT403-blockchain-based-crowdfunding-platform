@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import VerticalNav from '../components/VerticalNav';
 import '../styles/styles.css';
+import {Link} from 'react-router-dom';
 
 const Explore = () => {
     const [contributions, setcontributions] = useState([]);
@@ -31,6 +32,7 @@ const Explore = () => {
                         <div className='col-amount'>Pledged Amount (ETH)</div>
                         <div className='col-tx'>Transaction Hash</div>
                         <div className='col-time'>Time</div>
+                        <div>Proof</div>
                     </div>
                     {contributions.map((c) => (
                     <div className='contr-table-row'>
@@ -38,6 +40,7 @@ const Explore = () => {
                         <div className='col-amount'>{c.amount}</div>
                         <div className='col-tx'>{c.txhash}</div>
                         <div className='col-time'>{c.time}</div>
+                        <div><button className='profile-proof-button'><Link style={{textDecoration: "none", color: "#fff"}} to={{ pathname: `${c.projectid}/proofs`}}  state= {{milestone:c.milestone}} >View</Link></button></div>
                     </div>
                     ))}
                     <div className='total-cont'>Total contributions : {contributions.length}</div>

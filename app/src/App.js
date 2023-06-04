@@ -11,6 +11,7 @@ import Project from './views/Project';
 import Profile from './views/Profile';
 import Contribution from './views/Contribution';
 import UploadProof from './views/UploadProof';
+import ViewProof from './views/ViewProof';
 
 function App() {
   return (
@@ -30,7 +31,10 @@ function App() {
           <Route index element={<Profile />} />
           <Route path=":projectid/proofs" element={<UploadProof  />}/>
         </Route>
-        <Route path="contributions" element={<Contribution  />}/>
+        <Route path="contributions">
+          <Route index element={<Contribution />} />
+          <Route path=":projectid/proofs" element={<ViewProof  />}/>
+        </Route>
       </Routes>
     </Router>
   );
