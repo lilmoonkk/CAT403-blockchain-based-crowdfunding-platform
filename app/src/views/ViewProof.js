@@ -70,12 +70,6 @@ const ViewProof = (props) => {
                 </div>
               ))}
               </div>
-              {!approval[milestone-1]&&(
-                <div>
-                <button className='proof-button approve-button'>Approve</button>
-                <button className='proof-button approve-button' style={{backgroundColor: '#bf0000'}}>Reject</button>
-                </div>
-              )}
               
             </div>
           ))}
