@@ -40,10 +40,10 @@ const UploadProof = (props) => {
         <div class='proof-container'>
           <div className='pending-proof-container'>
             {pendingProof?(<h3>Image upload is not available at the moment due to pending proofs of completion</h3>):(
-            <>
-              <p>Upload proof of completion for  milestone {data.current_mil}</p>
+            <div className='upload-proof-container'>
+              <h3>Upload proof of completion for  milestone {data.current_mil}</h3>
               <ImageUpload project={data}></ImageUpload>
-            </>
+            </div>
             )}
           </div>
           {Object.entries(proofs).map(([milestone, proofList]) => (

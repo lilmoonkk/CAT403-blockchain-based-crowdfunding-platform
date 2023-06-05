@@ -455,6 +455,7 @@
     flex-flow: column nowrap;
     height: 200px;
     justify-content: center;
+    margin-bottom: 30px;
     padding: 50px;    
     width: 300px;
 }
@@ -522,6 +523,11 @@
 .approve-button{
     width: 110px;
     background-color: #4caf50;
+}
+
+.upload-proof-container{
+    display: inline-block;
+    justify-content: center;
 }
 
 .upload-proof-bg-clicked{
