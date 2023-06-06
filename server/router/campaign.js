@@ -90,10 +90,10 @@ async function returnAllFund(projectid){
     body.forEach(async(element) => {
         //console.log(element)
         // To get wallet address of project owner
-        const userbody = await userdb.findOne({ _id : element.uid }, {projection: {wallet_address: 1}});
+        //const userbody = await userdb.findOne({ _id : element.uid }, {projection: {wallet_address: 1}});
 
         // To transfer remaining fund
-        contract.transfer({contract_address: element.contract_address, caller_address: userbody.wallet_address, revaddress : element.caller_address, amount : element.amount}, function(value){
+        contract.transfer({contract_address: element.contract_address, caller_address: element.caller_address, revaddress : element.caller_address, amount : element.amount}, function(value){
             let query = { _id : element._id };
             let update = { $set: { status: 'All returned' } }
             try{
@@ -155,10 +155,10 @@ async function returnHalfFund(projectid){
         let amount = element.amount * remaining;
 
         // To get wallet address of project owner
-        const userbody = await userdb.findOne({ _id : element.uid }, {projection: {wallet_address: 1}});
+        //const userbody = await userdb.findOne({ _id : element.uid }, {projection: {wallet_address: 1}});
 
         // Transfer remaining fund
-        contract.transfer({contract_address: element.contract_address, caller_address: userbody.wallet_address, revaddress : element.caller_address, amount : amount}, function(value){
+        contract.transfer({contract_address: element.contract_address, caller_address: element.caller_address, revaddress : element.caller_address, amount : amount}, function(value){
             let query = { _id : element._id };
             let update = { $set: { status: 'Half returned' } }
             try{

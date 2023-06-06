@@ -7,6 +7,7 @@ const ObjectId = require('mongodb').ObjectId;
 const database = connection.db('Project');
 const proofdb = database.collection('Proof');
 const projectdb = database.collection('ProjectDetails');
+const responsedb = database.collection('Response');
 const contract = require('../web3/contract');
 
 
@@ -45,7 +46,7 @@ router.post('/add', upload.array('images', 10), async function(req, res){
                     projectid: body.projectid,
                     imageUrl: url,
                     timestamp: new Date().getTime() + 8 * 60 * 60 * 1000,
-                    milestone: body.milestone
+                    milestone: parseInt(body.milestone)
                 };
 
                 return proofdb.insertOne(payload);
@@ -141,6 +142,73 @@ router.get('/:id/proofs', async function(req, res){
     }
 });
 
+router.post('/approve', async function(req, res){
+    let body = req.body;
+    try{
+        responsedb.insertOne(body);
+    } catch (err) {
+        console.log("Failed because", err);
+    }
+    res.send(body)
+});
 
+router.post('/reject', async function(req, res){
+    let body = req.body;
+    try{
+        responsedb.insertOne(body);
+    } catch (err) {
+        console.log("Failed because", err);
+    }
+    res.send(body)
+});
+
+router.put('/conclude', async function(req, res){
+    let body = req.body
+    concludeApproval(body.milestone, body.pid)
+    res.sendStatus(200)
+});
+
+async function concludeApproval(milestone, pid){
+    let query = { projectid : pid, milestone: milestone };
+    try{
+        const body = await responsedb.find(query).toArray();
+        let approve = 0
+        let reject = 0
+        let s = ""
+        // Count the result
+        body.forEach(element => {
+            //Generate hashing material
+            s += element.uid
+            s += element.approved
+
+            if(element.approved){
+                approve += 1
+            } else {
+                reject += 1
+            }
+        })
+        // Conclude the result
+        let overall = approve + reject
+        let approved = false
+        if(approve >= (overall / 3 * 2)){
+            approved = true
+            projectdb.updateOne({ _id : new ObjectId(pid) }, {$set: {"milestone.$[elem].approved": approved, "current_mil": milestone+1}},{arrayFilters: [{ "elem.seq": milestone }]});
+
+            // Generate hash string
+            const hash = crypto.createHash('sha256');
+
+            // Update the hash with the image data
+            hash.update(s);
+
+            // Calculate the hash digest
+            const hashDigest = hash.digest('hex');
+        } else {
+            projectdb.updateOne({ _id : new ObjectId(pid) }, {$set: {"milestone.$[elem].approved": approved}},{arrayFilters: [{ "elem.seq": milestone }]});
+        }
+    } catch (err) {
+        console.log("Failed because", err);
+    }
+
+}
 
 module.exports = router;

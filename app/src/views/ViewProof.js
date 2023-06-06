@@ -12,7 +12,7 @@ const ViewProof = (props) => {
     const milestoneData = state.milestone;
     useEffect(() => {
         async function fetchData(){
-            await fetch(`http://localhost:3001/proof/${params.projectid}/proofs`).then(function(response) {
+            await fetch(`/proof/${params.projectid}/proofs`).then(function(response) {
                 return response.json();
             }).then(function(data) {
                 setapproval(data[0])
@@ -32,7 +32,39 @@ const ViewProof = (props) => {
         fetchData()
     }, []);
 
+    const handleApprove = async(milestone) => {
+      const res = await fetch('/proof/approve',{
+          method: 'post',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            uid: sessionStorage.getItem('uid'),
+            projectid: params.projectid,
+            milestone: milestone,
+            approved: true
+          })
+      }).catch(error => alert(error.message));
+      if(res.ok){
+        alert('You have placed your proofs successfully!')
+          //window.location.replace('/')
+      }
+    };
 
+    const handleReject = async(milestone) => {
+      const res = await fetch('/proof/reject',{
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          uid: sessionStorage.getItem('uid'),
+          projectid: params.projectid,
+          milestone: milestone,
+          approved: false
+        })
+    }).catch(error => alert(error.message));
+    if(res.ok){
+      alert('You have placed your proofs successfully!')
+        //window.location.replace('/')
+    }
+    };
   
     return (
       <div class='proof-bg'>
@@ -50,8 +82,8 @@ const ViewProof = (props) => {
             ))}
             </div>
             <div style={{marginTop: '10px'}}>
-                <button className='proof-button approve-button'>Approve</button>
-                <button className='proof-button approve-button' style={{backgroundColor: '#bf0000'}}>Reject</button>
+                <button className='proof-button approve-button' onClick={()=>handleApprove(pendingProof[0].milestone)}>Approve</button>
+                <button className='proof-button approve-button' style={{backgroundColor: '#bf0000'}} onClick={()=>handleReject(pendingProof[0].milestone)}>Reject</button>
             </div>
           </div>
           )}
