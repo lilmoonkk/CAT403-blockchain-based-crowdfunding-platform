@@ -92,21 +92,23 @@ const Project = () => {
                 <p className='profile-project-category'>{project.category}</p>
                 <p>{project.desc}</p>
                 <div>
-                  <p>{project.pledged} ETH raised / {project.totalfund} ETH</p>
+                  <p>{project.pledged.toFixed(5)} ETH raised / {project.totalfund} ETH</p>
                   <ProgressBar completed={(project.pledged/project.totalfund)*100 > 100 ? 100 : (project.pledged/project.totalfund)*100} />
                 </div>
             </div>
         </div>
-        <div style={{width: '200px'}}>
-            <h2>Milestones</h2>
+        <div className='divider'></div>
+        <div>
+            <h2 style={{color: '#005dba', textAlign: 'center'}}>Milestones</h2>
+            <div style={{display: 'flex', justifyContent: 'space-around'}}>
             {project.milestone?.map((milestone) => (
-                <>
-                <p>Milestone {milestone.seq}</p>
+                <div className='milestone-card'>
+                <h3 className='milestone-seq'>{milestone.seq}</h3>
                 <h3>{milestone.title}</h3>
                 <p>Fund needed: {milestone.amount} ETH</p>
-                <div className='divider-line'></div>
-                </>
+                </div>
             ))}
+            </div>
         </div>
         <div className='pledge-container'>
             <form>
@@ -118,7 +120,7 @@ const Project = () => {
                 
               </div>
             </form>
-            <button className='pledge-button' onClick={handlePledge}>Pledge</button>
+            <button className='proof-button' style={{background: '#4caf50', margin: '0 30px 0 20px'}} onClick={handlePledge}>Pledge</button>
         </div>
             
       </div>

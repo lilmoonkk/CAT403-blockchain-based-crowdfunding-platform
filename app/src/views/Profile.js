@@ -72,7 +72,7 @@ const Profile = () => {
                             {project.status == 'Claimable'&&
                             (<>
                                 <p style={{fontSize: "0.9em",color: "#808080"}}>You are now eligible to claim fund for milestone {project.current_mil}</p>
-                                <button className='claim-button' onClick={() => handleClaim(project)}>Claim Now</button>
+                                <button className='proof-button' style={{background: '#4caf50', margin: '0'}} onClick={() => handleClaim(project)}>Claim Now</button>
                             </>)}
                         </div>
                         <button className='profile-proof-button'><Link style={{textDecoration: "none", color: "#fff"}} to={{ pathname: `${project._id}/proofs`}} state= {{project:project}} >Proof</Link></button>

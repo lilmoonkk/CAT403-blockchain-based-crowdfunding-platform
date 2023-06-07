@@ -19,10 +19,12 @@ text-decoration: none;
 padding: 0 1rem;
 height: 100%;
 cursor: pointer;
-&.active {
-	color: #4d4dff;
-}
+
 `;
+
+/*&.active {
+	color: #4d4dff;
+}*/
 
 export const NavLogOut = styled.div`
 color: #808080;

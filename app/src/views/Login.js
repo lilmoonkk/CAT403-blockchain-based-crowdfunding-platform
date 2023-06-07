@@ -27,8 +27,9 @@ const Login = () => {
 
     return (
         <div className="auth-background">
-            <div className="form">
-                <h1>Log In</h1>
+            <div className="form" style={{height: '350px'}}>
+                <h1>Welcome Back !</h1>
+                <p>Log in to continue</p>
                 <form className="form-body">
                     <div className="input">
                         <input className="form-input" type="email" id="email" placeholder="Email" onChange={(e) => setemail(e.target.value)}/>

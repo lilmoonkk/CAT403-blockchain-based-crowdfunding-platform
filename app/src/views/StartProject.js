@@ -93,7 +93,7 @@ const StartProject = () => {
     }
 
     return (
-        <div className='background'>
+        <div className='background' style={{background: 'rgb(254,248,246)'}}>
             <div className='project-form'>
                 <h1>Let's get ready to start your project!</h1>
                 <form className='form-body'>

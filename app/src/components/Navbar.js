@@ -1,6 +1,7 @@
 import React from "react";
 import { Nav, NavLink, NavLogOut, NavMenu } from "./NavbarElements";
 import {useNavigate} from 'react-router-dom';
+import '../styles/styles.css';
 
 const Navbar = () => {
 	const navigate = useNavigate();
@@ -38,7 +39,7 @@ const Navbar = () => {
 		<>
 		<Nav>
 			<NavMenu>
-			<NavLink to="/">
+			<NavLink className='title' to="/">
 				LETSFUND
 			</NavLink>
 			<NavLink to="/explore" activeStyle>

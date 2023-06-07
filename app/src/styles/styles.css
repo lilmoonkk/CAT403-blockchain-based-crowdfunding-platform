@@ -1,5 +1,7 @@
 /*
     1.0 General
+    2.0 Home
+    2.1 Carousel
     2.0 Sign up
     3.0 Connect wallet
     4.0 Create project
@@ -16,23 +18,48 @@
     padding: 50px 0;
 }
 
+.title{
+    color: #fa6400 !important;
+    font-family: 'Francois One', sans-serif;
+    font-weight: 800;
+    font-size: 25px;
+}
+
+.divider{
+    border: 0.5px #808080 solid;
+    margin: 30px 0 0;
+    width: 100%;
+}
 /* Home */
 .home-banner{
-    background-image: url(https://i.ibb.co/D5HPn31/plan.jpg);
+    background-color:#f0f1f2;
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    height: 500px;
+    height: calc(-512px);
     width: 100%;
 }
 
-.home-caption{
+.home-buttons{
     display: flex;
-    font-size: 2.5em;
     justify-content: center;
-    margin: 0;
+}
+
+.home-caption{
+    color: #2a2a2a;
+    display: flex;
+    font-size: 2em;
+    justify-content: center;
+    margin: 20px 0 0;
     position: relative;
     top: 35%;
+}
+
+.home-subcaption{
+    color: #2a2a2a;
+    font-style: italic;
+    margin: 10px 0 25px;
+    text-align: center;
 }
 
 .home-start-project{
@@ -40,26 +67,40 @@
     border-radius: 5px;
     display: block;
     font-size: 1em;
-    margin: 0 auto;
+    margin: 0 20px;
     padding: 10px 20px;
     position: relative;
     top: 40%;
+    width: 145px;
     
+}
+
+/* Carousel */
+.carousel{
+    height: 512px;
 }
 
 /* Sign up */
 
 .auth-background{
-    height: calc(100vh - 85px);
+    height: calc(100vh - 60px);
     background: rgb(254,248,246);
 }
 
 .submit-button{
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+    box-sizing: border-box;
     bottom: 5%;
+    background-color: #fa6400;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
     left: 0;
     margin-left: auto;
     margin-right: auto;
-    padding: 20px 40px;
+    padding: calc(0.875rem - 6px) calc(1.5rem - 2px);;
     position: absolute;
     right: 0;
     text-align: center;
@@ -212,13 +253,28 @@
 }
 /* Project */
 
-.divider-line{
+/*.divider-line{
     flex: 1;
     height: 1px;
     background: black;
+}*/
+
+.milestone-card{
+    background-color: rgb(254, 234, 227);
+    border-radius: 20px;
+    margin: 0 20px;
+    padding-bottom: 10px;
+    text-align: center;
+    width: 350px;
 }
 
-.pledge-button{
+.milestone-seq{
+    color: #808080;
+    font-size: 30px;
+    margin-bottom: 0;
+}
+
+/*.pledge-button{
     margin: 0 30px 0 60px;
     background: #4caf50;
     border: 1px solid #ccc;
@@ -226,7 +282,7 @@
     color: #fff;
     font-size: 14px;
     padding: 15px 20px;
-}
+}*/
 
 .pledge-container{
     background: #fff;
@@ -245,7 +301,7 @@
 }
 
 #project{
-    padding: 50px 30px 60px;
+    padding: 50px 30px 90px;
 }
 
 .project-img{
@@ -269,14 +325,14 @@
 
 /* Profile */
 
-.claim-button{
+/*.claim-button{
     background: #4caf50;
     border: 1px solid #ccc;
     border-radius: 5px;
     color: #fff;
     font-size: 14px;
     padding: 8px;
-}
+}*/
 
 .profile-background{
 
@@ -535,3 +591,5 @@
 
 .upload-proof-bg-unclicked{
 }
+
+
