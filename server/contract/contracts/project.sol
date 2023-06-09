@@ -12,10 +12,11 @@ contract project{
     address payable company;
     uint goal;
     uint pledged;
-    struct proof{
+    /*struct proof{
         string id;
         string signature;
-    }
+    }*/
+    string imagehash;
     //Ori
     /*struct milestone{
         uint seq;
@@ -25,9 +26,10 @@ contract project{
     struct milestone{
         uint amount;
         State state;
+        string response;
     }
     mapping(uint => milestone) milestones;
-    mapping(uint => proof[]) public proofs;
+    mapping(uint => string) public proofs;
 
     //Ori
     /*constructor (string memory _projectId, milestone[] memory _milestone, address payable _company) payable{
@@ -44,7 +46,7 @@ contract project{
         //fundAmount = msg.value;
         projectId = _projectId;
         for (uint i = 1; i <= _milestone.length; i++) {
-            milestones[i] = milestone(_milestone[i-1], State.notCompleted);
+            milestones[i] = milestone(_milestone[i-1], State.notCompleted, "");
         }
         company = _company;
         //backer = _backer;
@@ -81,7 +83,7 @@ contract project{
         return address(this).balance;
     }
 
-    function getProof() public view returns (proof[] memory){
+    function getProof() public view returns (string memory){
         return proofs[1];
     }
 
@@ -96,11 +98,24 @@ contract project{
         state = State.completed;
     }*/
 
-    function uploadProof(uint milestoneseq, proof[] memory _proof) public{
-        for (uint i = 1; i <= _proof.length; i++) {
+    function uploadProof(uint milestoneseq, string memory _proof) public{
+        /*for (uint i = 1; i <= _proof.length; i++) {
             proofs[milestoneseq].push(_proof[i-1]);
-        }
+        }*/
+        proofs[milestoneseq] = _proof;
         milestones[milestoneseq].state = State.completed;
+    }
+
+    function uploadApproval(uint milestoneseq, string memory _response, bool approved) public{
+        /*for (uint i = 1; i <= _proof.length; i++) {
+            proofs[milestoneseq].push(_proof[i-1]);
+        }*/
+        milestones[milestoneseq].response = _response;
+        if(approved){
+            milestones[milestoneseq].state = State.approved;
+        } else {
+            milestones[milestoneseq].state = State.notApproved;
+        }
     }
 
     /*function verifyProof(bool isApproved) public{

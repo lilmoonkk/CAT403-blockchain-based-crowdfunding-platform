@@ -29,8 +29,9 @@ router.post('/add', upload.array('images', 10), async function(req, res){
     
     try{
         const promises = [];
-        let imagesId = []
+        let imagesURL = []
         let imagesHash = []
+        //let imagesHash = ""
         images.forEach(element => {
             //console.log(element.buffer)
             //Store image to firestore and get URL
@@ -42,18 +43,19 @@ router.post('/add', upload.array('images', 10), async function(req, res){
                 return getDownloadURL(imageRef);
             })
             .then(url => {
-                let payload = {
+                /*let payload = {
                     projectid: body.projectid,
                     imageUrl: url,
                     timestamp: new Date().getTime() + 8 * 60 * 60 * 1000,
                     milestone: parseInt(body.milestone)
                 };
 
-                return proofdb.insertOne(payload);
+                return proofdb.insertOne(payload);*/
+                imagesURL.push(url)
             })
-            .then(result => {
+            /*.then(result => {
                 imagesId.push(result.insertedId.toString());
-            });
+            });*/
             
             promises.push(p);
 
@@ -66,27 +68,62 @@ router.post('/add', upload.array('images', 10), async function(req, res){
             // Calculate the hash digest
             const hashDigest = hash.digest('hex');
             imagesHash.push(hashDigest);
-            console.log('Image hash:', hashDigest);
+            //imagesHash += hashDigest
+            //console.log('Image hash:', hashDigest);
             
         })
         
-        
+        // Create a hash object
+        const hash = crypto.createHash('sha256');
 
+        // Update the hash with the image data
+        hash.update(imagesHash.join());
+
+        // Calculate the hash digest
+        const allImagesHash = hash.digest('hex');
+        //imagesHash.push(hashDigest);
+        
+        console.log('Image hash:', allImagesHash);
         Promise.all(promises)
         .then(() => {
-            let payloadchain = []
+            /*let payloadchain = []
             for (let i = 0; i < imagesHash.length; i++){
                 payloadchain.push([imagesId[i], imagesHash[i]])
             }
-            console.log('payloadchain',payloadchain)
-            return Promise.all([
-            Promise.resolve(imagesId),
+            console.log('payloadchain',payloadchain)*/
+            let payload = {
+                projectid: body.projectid,
+                imageUrl: imagesURL,
+                timestamp: new Date().getTime() + 8 * 60 * 60 * 1000,
+                milestone: parseInt(body.milestone)
+            };
+
+            return proofdb.insertOne(payload);
+        }).then(() => {
             contract.uploadProof(
                 {
                 contract_address: body.contract_address,
                 owner_address: body.owner_address,
                 milestone: body.milestone,
-                proofs: payloadchain
+                proofs: allImagesHash
+                },
+                function (value) {
+                let update = { $set: { status: 'Waiting for proof approval' } };
+                let query = { _id: new ObjectId(body.projectid) };
+                projectdb.updateOne(query, update);
+                console.log('txhash', value);
+                }
+            )
+            res.sendStatus(200);
+        })
+            /*return Promise.all([
+            Promise.resolve(imagesURL),
+            contract.uploadProof(
+                {
+                contract_address: body.contract_address,
+                owner_address: body.owner_address,
+                milestone: body.milestone,
+                proofs: allImagesHash
                 },
                 function (value) {
                 let update = { $set: { status: 'Waiting for proof approval' } };
@@ -97,12 +134,7 @@ router.post('/add', upload.array('images', 10), async function(req, res){
             )
             ]);
         })
-        /*
-            1. Reorganize payload
-            2. MOdify smart contract change uint to string for id
-            3. from account
-        */
-        res.sendStatus(200);
+        res.sendStatus(200);*/
         
     } catch (err) {
         console.log("Failed because", err);
@@ -123,8 +155,10 @@ router.get('/:id/proofs', async function(req, res){
         const milestone = projectbody.milestone
         let result = {}
         body.forEach(element => {
-            result[element.milestone] = result[element.milestone] || [];
-            result[element.milestone].push(element);
+            //result[element.milestone] = result[element.milestone] || [];
+            //result[element.milestone].push(element);
+            //console.log(element)
+            result[element.milestone] = element.imageUrl
         })
         result[0] = [] //to record approval of each milestone
         for (let i=0; i<milestone.length; i++){
@@ -193,6 +227,7 @@ async function concludeApproval(milestone, pid){
         if(approve >= (overall / 3 * 2)){
             approved = true
             projectdb.updateOne({ _id : new ObjectId(pid) }, {$set: {"milestone.$[elem].approved": approved, "current_mil": milestone+1}},{arrayFilters: [{ "elem.seq": milestone }]});
+            const addresses = await projectdb.findOne({_id: new ObjectId(pid)}, {projection: {contract_address: 1, owner_address: 1}});
 
             // Generate hash string
             const hash = crypto.createHash('sha256');
@@ -202,6 +237,19 @@ async function concludeApproval(milestone, pid){
 
             // Calculate the hash digest
             const hashDigest = hash.digest('hex');
+            contract.uploadResponse(
+                {
+                contract_address: addresses.contract_address,
+                owner_address: addresses.owner_address,
+                milestone: milestone,
+                response: hashDigest,
+                approved: approved
+                },
+                function (value) {
+                console.log('txhash', value);
+                }
+            )
+
         } else {
             projectdb.updateOne({ _id : new ObjectId(pid) }, {$set: {"milestone.$[elem].approved": approved}},{arrayFilters: [{ "elem.seq": milestone }]});
         }

@@ -66,7 +66,7 @@ const Profile = () => {
                             </div>
                             <p style={{height: "60px"}}>{project.desc}</p>
                             <div className='profile-project-comparison'>
-                                <p>{project.pledged?project.pledged:0} ETH raised / {project.totalfund} ETH</p>
+                                <p>{project.pledged?project.pledged.toFixed(5):0} ETH raised / {project.totalfund} ETH</p>
                                 {project.pledged >= project.totalfund&&<Tick />}
                             </div>
                             {project.status == 'Claimable'&&

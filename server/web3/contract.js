@@ -116,6 +116,25 @@ const uploadProof = (async (req, callback) => {
     });
 });
 
+const uploadResponse = (async (req, callback) => {
+    const contract = new web3.eth.Contract(abi, req.contract_address);
+    //let account = req.owner_address;
+    let parameter = {
+        from: req.owner_address,
+        gas: web3.utils.toHex(6721975),
+        gasPrice: web3.utils.toHex(web3.utils.toWei('30', 'gwei'))
+    }
+    console.log(req.owner_address)
+    await contract.methods.uploadApproval(req.milestone, req.response, req.approved).send(parameter)
+    .on('transactionHash', function(hash){
+      console.log("Transaction hash:", hash);
+      callback(hash)
+    })
+    .on('error', function(error){
+        console.error(error);
+    });
+});
+
 module.exports = {
     createSmartContract,
     pledge,
@@ -123,5 +142,6 @@ module.exports = {
     getBalance,
     claim,
     transfer,
-    uploadProof
+    uploadProof,
+    uploadResponse
 };

@@ -59,7 +59,7 @@ const UploadProof = (props) => {
               <div className='proof-img-row-container' style={{paddingLeft: '-15px'}}>
               {proofList.map((proof) => (
                 <div key={proof._id} className='proof-img-container'>
-                  <img src={proof.imageUrl} alt="Proof" class='proof-img'/>
+                  <img src={proof} alt="Proof" class='proof-img'/>
                 </div>
               ))}
               </div>

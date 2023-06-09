@@ -57,7 +57,7 @@ function reorganizePayload(data){
     for(let i = 0; i<data.milestones.length; i++){
         data.milestones[i]['seq'] = i+1;
         data.milestones[i]['amount'] = parseFloat(data.milestones[i]['amount']);
-        data.milestones[i]['percentage'] = parseFloat(data.milestones[i]['amount'])/parseFloat(data.totalfund);
+        data.milestones[i]['percentage'] = (parseFloat(data.milestones[i]['amount'])/parseFloat(data.project.totalfund)).toFixed(5);
     }
     result = {...data.project};
     result['uid'] = data.uid;

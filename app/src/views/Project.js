@@ -92,7 +92,7 @@ const Project = () => {
                 <p className='profile-project-category'>{project.category}</p>
                 <p>{project.desc}</p>
                 <div>
-                  <p>{project.pledged.toFixed(5)} ETH raised / {project.totalfund} ETH</p>
+                  <p>{project.pledged?project.pledged.toFixed(5):0} ETH raised / {project.totalfund} ETH</p>
                   <ProgressBar completed={(project.pledged/project.totalfund)*100 > 100 ? 100 : (project.pledged/project.totalfund)*100} />
                 </div>
             </div>

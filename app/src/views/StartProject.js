@@ -13,7 +13,8 @@ const StartProject = () => {
         image: '',
         video: '',
         campaign_period: 0,
-        totalfund: 0.00
+        totalfund: 0.00,
+        owner_address: sessionStorage.getItem('wallet_address')
     });
     const [milestones, setmilestones] = useState([]);
     const [numMilestone, setnumMilestone] = useState(1);
