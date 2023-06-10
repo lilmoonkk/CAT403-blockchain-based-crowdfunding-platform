@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import '../styles/styles.css';
 import { useParams, useNavigate } from "react-router-dom"
 import ProgressBar from '../components/ProgressBar';
+import Timer from '../components/Timer';
 
 const Project = () => {
     const params = useParams()
@@ -91,6 +92,10 @@ const Project = () => {
                 <h1>{project.name}</h1>
                 <p className='profile-project-category'>{project.category}</p>
                 <p>{project.desc}</p>
+                <div style={{display:'flex'}}>
+                  <Timer targetDate={project.end} />
+                  <p>left</p>
+                </div>
                 <div>
                   <p>{project.pledged?project.pledged.toFixed(5):0} ETH raised / {project.totalfund} ETH</p>
                   <ProgressBar completed={(project.pledged/project.totalfund)*100 > 100 ? 100 : (project.pledged/project.totalfund)*100} />

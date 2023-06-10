@@ -323,6 +323,9 @@
     display: flex;
 }
 
+.timer{
+    margin-right: 10px;
+}
 /* Profile */
 
 /*.claim-button{
