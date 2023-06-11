@@ -503,6 +503,32 @@
     width: 100%;
 }
 
+/* Admin */
+.col-admin-project{
+    margin: 0 20px;
+    width: 10%;
+}
+
+.col-admin-desc{
+    margin: 0 20px;
+    width: 20%;
+}
+
+.col-admin-catg{
+    margin: 0 20px;
+    width: 10%;
+}
+
+.col-admin-total{
+    margin: 0 20px;
+    width: 10%;
+}
+
+.col-admin-milestone{
+    margin: 0 20px;
+    width: 50%;
+}
+
 /* Upload Proof */
 
 .file-upload-div{
