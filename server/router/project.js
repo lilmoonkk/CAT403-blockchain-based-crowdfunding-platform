@@ -20,7 +20,7 @@ router.get('/projects', async function(req, res){
 });
 
 router.get('/projects/admin', async function(req, res){
-    const body = await projectdb.find({}).toArray();
+    const body = await projectdb.find({}).sort({ _id: -1 }).toArray();
     //console.log(body[0].email) //it would output email of first object
     res.send(body);
 });
