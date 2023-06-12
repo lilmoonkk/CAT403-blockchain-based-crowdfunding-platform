@@ -38,7 +38,8 @@ const Admin = () => {
                     <div className='col-admin-catg'>Category</div>
                     <div className='col-admin-total'>Total Fund</div>
                     <div className='col-admin-milestone'>Milestone</div>
-                    <div>Approve</div>
+                    <div className='col-admin-total'>Campaign Day</div>
+                    <div className='col-admin-catg'>Approve</div>
                 </div>
                 {projects.map((p) => (
                 <div className='contr-table-row'>
@@ -56,7 +57,8 @@ const Admin = () => {
                         ))
                         }
                     </div>
-                    <div><button className='profile-proof-button' onClick={() => handleApprove(p._id)}>Approve</button></div>
+                    <div className='col-admin-total'>{p.campaign_period}</div>
+                    <div className='col-admin-catg'>{p.status == 'Submitted'?(<button className='profile-proof-button' onClick={() => handleApprove(p._id)}>Approve</button>):'Responded'}</div>
                 </div>
                 ))}
                 <div className='total-cont'>Total projects : {projects.length}</div>

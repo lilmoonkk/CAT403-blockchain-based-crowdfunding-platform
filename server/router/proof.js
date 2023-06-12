@@ -91,11 +91,16 @@ router.post('/add', upload.array('images', 10), async function(req, res){
                 payloadchain.push([imagesId[i], imagesHash[i]])
             }
             console.log('payloadchain',payloadchain)*/
+            const current = new Date().getTime() + 8 * 60 * 60 * 1000;
+            const duration = 1000 * 60 * 60 * 24 * 3; // 3 days period to get approval
+            const end = current + duration;
             let payload = {
                 projectid: body.projectid,
                 imageUrl: imagesURL,
                 timestamp: new Date().getTime() + 8 * 60 * 60 * 1000,
-                milestone: parseInt(body.milestone)
+                milestone: parseInt(body.milestone),
+                end: end,
+                status: 'Pending'
             };
 
             return proofdb.insertOne(payload);

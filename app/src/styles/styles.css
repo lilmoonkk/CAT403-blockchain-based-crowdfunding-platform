@@ -521,12 +521,17 @@
 
 .col-admin-total{
     margin: 0 20px;
+    width: 5%;
+}
+
+.col-admin-approve{
+    margin: 0 20px;
     width: 10%;
 }
 
 .col-admin-milestone{
     margin: 0 20px;
-    width: 50%;
+    width: 40%;
 }
 
 /* Upload Proof */

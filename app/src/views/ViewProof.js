@@ -8,6 +8,7 @@ const ViewProof = (props) => {
     const [proofs, setproofs] = useState([]);
     const [approval, setapproval] = useState([]);
     const [pendingProof, setpendingProof] = useState(null);
+    const [feedback, setfeedback] = useState("");
     const {state} = useLocation();
     const milestoneData = state.milestone;
     useEffect(() => {
@@ -57,13 +58,19 @@ const ViewProof = (props) => {
           uid: sessionStorage.getItem('uid'),
           projectid: params.projectid,
           milestone: milestone,
-          approved: false
+          approved: false,
+          feedback: feedback
         })
     }).catch(error => alert(error.message));
     if(res.ok){
       alert('You have placed your proofs successfully!')
         //window.location.replace('/')
     }
+    };
+
+    const handleFeedback = (e) => {
+      const { value } = e.target.value;
+      setfeedback(value);
     };
   
     return (
@@ -85,7 +92,11 @@ const ViewProof = (props) => {
                 <button className='proof-button approve-button' onClick={()=>handleApprove(pendingProof[0].milestone)}>Approve</button>
                 <button className='proof-button approve-button' style={{backgroundColor: '#bf0000'}} onClick={()=>handleReject(pendingProof[0].milestone)}>Reject</button>
             </div>
-          </div>
+            <div>
+              <label className="project-form-label">Feedback</label>
+              <textarea className="project-form-input" type="text" name="feedback" id="feedback" onChange={handleFeedback}/>
+            </div>
+            </div>
           )}
           {Object.entries(proofs).map(([milestone, proofList]) => (
             <div key={milestone}>
