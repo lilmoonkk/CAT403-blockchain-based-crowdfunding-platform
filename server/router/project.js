@@ -41,15 +41,28 @@ router.get('/:link', async function(req, res){
 
 // 4 Add project
 router.post('/add', async function(req, res){
-    let body = req.body;
+    let tmp = req.body;
     try{
-        let payload = await reorganizePayload(body)
+        let payload = await reorganizePayload(tmp)
         //console.log(payload)
-        projectdb.insertOne(payload);
+        let result = await projectdb.insertOne(payload);
+        console.log(result)
+        let query = { _id : result.insertedId };
+        const body = await projectdb.findOne(query, { projection: {milestone:1, wallet_address:1, campaign_period: 1}});
+        //console.log(body);
+        //need to get address from cache
+        
+        await contract.createSmartContract({id: result.insertedId.toString(), milestone: body.milestone, signtx: tmp.signtx}, function(value){
+            //let update = { $set: { Approved: true, contract_address: contractAddr } };
+            const current = new Date().getTime() + 8 * 60 * 60 * 1000;
+            const duration = 1000 * 60 * 60 * 24 * body.campaign_period;
+            const end = current + duration;
+            projectdb.updateOne(query, { $set: { status: 'Approved', start: current, end: end, pledged: 0, contract_address: value } });
+        }); 
     } catch (err) {
         console.log("Failed because", err);
     }
-    res.send(body)
+    res.sendStatus(200)
 });
 
 function reorganizePayload(data){

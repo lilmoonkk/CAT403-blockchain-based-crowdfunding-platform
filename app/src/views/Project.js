@@ -3,6 +3,7 @@ import '../styles/styles.css';
 import { useParams, useNavigate } from "react-router-dom"
 import ProgressBar from '../components/ProgressBar';
 import Timer from '../components/Timer';
+import web3 from 'web3'
 
 const Project = () => {
     const params = useParams()
@@ -33,22 +34,32 @@ const Project = () => {
           if(accounts.length){
               //let value = (pledgeamount * 1000000000000000000).toString(16);
               //console.log('test',value)
-              /*window.ethereum
+              let valueInHex = '0x0'
+              if (parseInt(pledgeamount) != 0){
+                const valueInWei = web3.utils.toWei(pledgeamount.toString(), 'ether');
+                console.log('inwei', valueInWei)
+                const  intValue = parseInt(valueInWei);
+                const valueInHex = intValue.toString(16);
+                console.log('inhex', valueInHex)
+              }
+              
+              let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+              window.ethereum
             .request({
               method: 'eth_sendTransaction',
               params: [
                 {
-                  from: '0x1610E02866Fce7B278a06FA1EfcCb81b5753AA85',
+                  from: accounts[0],
                   to: project.contract_address,
-                  value: '0x'+value,
-                  gasPrice: '0x09184e72a000',
-                  gas: '0x5208',
+                  value: valueInHex,
+                  //gasPrice: '0x1000',
+                  //gas: '0x16354',
                 },
               ],
             })
             .then((txHash) => console.log(txHash))
-            .catch((error) => console.error('err',error));*/
-            const res = await fetch('/project/pledge',{
+            .catch((error) => console.error('err',error));
+            /*const res = await fetch('/project/pledge',{
                 method: 'put',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
@@ -62,7 +73,7 @@ const Project = () => {
             if(res.ok){
               alert('You have placed your pledge successfully!')
                 //window.location.replace('/')
-            }
+            }*/
           
           } else {
             getAccount()

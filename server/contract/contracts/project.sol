@@ -138,3 +138,9 @@ contract project{
         backer.transfer(balance);
     }*/
 }
+
+contract projectCreator{
+    function createProject(string memory _projectId, uint[] memory _milestone, address payable _company) public returns (project){
+        return new project(_projectId, _milestone, _company);
+    }
+}
