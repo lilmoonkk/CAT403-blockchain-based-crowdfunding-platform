@@ -1,4 +1,5 @@
 var express = require('express');
+const request = require('request');
 var router = express.Router();
 const connection = require('../connection')
 const database = connection.db('Project');
@@ -6,6 +7,7 @@ const projectdb = database.collection('ProjectDetails');
 const contributiondb = database.collection('Contributions');
 const userdatabase = connection.db('User');
 const userdb = userdatabase.collection('UserDetails');
+const proofdb = database.collection('Proof');
 const contract = require('../web3/contract');
 var schedule = require('node-schedule');
 
@@ -28,9 +30,9 @@ rule.minute = 0;
 //rule.second = null;
 rule.tz = 'Asia/Kuala_Lumpur'
 
-//Create the job with Malaysia timezone
-const job = schedule.scheduleJob(rule, async function(){
-    console.log('This job runs every day at 9:00 AM in Malaysia timezone.');
+//Verify if campaigns are successfully funded
+const verifySuccess = schedule.scheduleJob(rule, async function(){
+    //console.log('This job runs every day at 9:00 AM in Malaysia timezone.');
     let query = { status : 'Approved' };
     const body = await projectdb.find(query).toArray();
     
@@ -38,7 +40,7 @@ const job = schedule.scheduleJob(rule, async function(){
         var day = 24 * 60 * 60 * 1000;
         var now = new Date().getTime() + 8 * 60 * 60 * 1000;
         var end = new Date(element.end)
-        console.log(now - element.end )
+        //console.log(now - element.end )
         if( now - element.end > day ){
             let query = { _id : element._id };
             let update
@@ -46,6 +48,7 @@ const job = schedule.scheduleJob(rule, async function(){
                 update = { $set: { status: 'Claimable' } };
             } else {
                 update = { $set: { status: 'Unsuccessful' } };
+                //returnAllFund(element._id)
             }
             try{
                 projectdb.updateOne(query, update);
@@ -170,6 +173,40 @@ async function returnHalfFund(projectid){
         });
     })
 }
+
+// Verify approval of proof of completion
+const verifyComplete = schedule.scheduleJob(rule, async function(){
+    let query = { status : 'Pending' };
+    const body = await proofdb.find(query).toArray();
+    
+    body.forEach(element => {
+        var day = 24 * 60 * 60 * 1000;
+        var now = new Date().getTime() + 8 * 60 * 60 * 1000;
+        if( now - element.end > day ){
+            const options = {
+                url: 'http://localhost:3000/proof/conclude',
+                method: 'PUT',
+                json: true,
+                body: { 
+                    milestone: element.milestone,
+                    pid: element.projectid
+                }
+            };
+            // if response says this is second time already, return half fund
+            request.put(options, (error, response, body) => {
+                if (error) {
+                  // Handle any errors that occur during the request
+                  console.error(error);
+                } else {
+                  // Handle the response from the PUT request
+                  console.log(body);
+                }
+            });
+        }
+    })
+        
+})
+
 
 router.put('/:pid/test', async function(req, res){
     let pid = req.params.pid.toString();
