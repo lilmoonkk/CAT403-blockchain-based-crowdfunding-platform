@@ -83,8 +83,12 @@ contract project{
         return address(this).balance;
     }
 
-    function getProof() public view returns (string memory){
-        return proofs[1];
+    function getProof(uint seq) public view returns (string memory){
+        return proofs[seq];
+    }
+
+    function compareProof(string memory _proof, uint seq) public view returns (bool){
+        return keccak256(abi.encodePacked(proofs[seq])) == keccak256(abi.encodePacked(_proof));
     }
 
     function claim(uint milestoneseq) external {

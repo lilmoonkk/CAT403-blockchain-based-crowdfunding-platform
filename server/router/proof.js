@@ -52,13 +52,22 @@ router.post('/add', upload.array('images', 10), async function(req, res){
 
                 return proofdb.insertOne(payload);*/
                 imagesURL.push(url)
+                // Create a hash object
+                const hash = crypto.createHash('sha256');
+
+                // Update the hash with the image data
+                hash.update(url);
+                // Calculate the hash digest
+                const hashDigest = hash.digest('hex');
+                imagesHash.push(hashDigest);
+                //imagesHash += hashDigest
             })
             /*.then(result => {
                 imagesId.push(result.insertedId.toString());
             });*/
             
             promises.push(p);
-
+/*
             // Create a hash object
             const hash = crypto.createHash('sha256');
 
@@ -67,25 +76,26 @@ router.post('/add', upload.array('images', 10), async function(req, res){
 
             // Calculate the hash digest
             const hashDigest = hash.digest('hex');
-            imagesHash.push(hashDigest);
+            imagesHash.push(hashDigest);*/
             //imagesHash += hashDigest
             //console.log('Image hash:', hashDigest);
             
         })
         
-        // Create a hash object
-        const hash = crypto.createHash('sha256');
-
-        // Update the hash with the image data
-        hash.update(imagesHash.join());
-
-        // Calculate the hash digest
-        const allImagesHash = hash.digest('hex');
-        //imagesHash.push(hashDigest);
-        
-        console.log('Image hash:', allImagesHash);
+        let allImagesHash
         Promise.all(promises)
         .then(() => {
+            // Create a hash object
+            const hash = crypto.createHash('sha256');
+
+            // Update the hash with the image data
+            hash.update(imagesHash.join());
+
+            // Calculate the hash digest
+            allImagesHash = hash.digest('hex');
+            //imagesHash.push(hashDigest);
+            
+            console.log('Image hash:', allImagesHash);
             /*let payloadchain = []
             for (let i = 0; i < imagesHash.length; i++){
                 payloadchain.push([imagesId[i], imagesHash[i]])
@@ -164,8 +174,11 @@ router.get('/:id/proofs', async function(req, res){
             //result[element.milestone].push(element);
             //console.log(element)
             result[element.milestone] = element.imageUrl
+            if(element.status == 'Pending'){
+                result[0] = element.milestone
+            }
         })
-        result[0] = [] //to record approval of each milestone
+        /*result[0] = [] //to record approval of each milestone
         for (let i=0; i<milestone.length; i++){
             if(!result[i+1]){
                 break
@@ -174,7 +187,8 @@ router.get('/:id/proofs', async function(req, res){
                 //console.log(milestone[i].approved)
                 result[0].push(milestone[i].approved)
             }
-        }
+        }*/
+        console.log(result)
         res.send(result)
     } catch (err) {
         console.log("Failed because", err);
@@ -232,8 +246,9 @@ async function concludeApproval(milestone, pid){
         if(approve >= (overall / 3 * 2)){
             approved = true
             projectdb.updateOne({ _id : new ObjectId(pid) }, {$set: {"milestone.$[elem].approved": approved, "current_mil": milestone+1}},{arrayFilters: [{ "elem.seq": milestone }]});
+            proofdb.updateOne({ projectid : pid, milestone: parseInt(milestone) }, {$set: {status: 'Approved'}});
             const addresses = await projectdb.findOne({_id: new ObjectId(pid)}, {projection: {contract_address: 1, owner_address: 1}});
-
+            s = approved + s
             // Generate hash string
             const hash = crypto.createHash('sha256');
 
@@ -257,11 +272,57 @@ async function concludeApproval(milestone, pid){
 
         } else {
             projectdb.updateOne({ _id : new ObjectId(pid) }, {$set: {"milestone.$[elem].approved": approved}},{arrayFilters: [{ "elem.seq": milestone }]});
+            proofdb.updateOne({ projectid : pid, milestone: parseInt(milestone) }, {$set: {status: 'Rejected'}});
         }
     } catch (err) {
         console.log("Failed because", err);
     }
 
+}
+
+router.get('/verify/:pid/:milestone', async function(req, res){
+    // Verify proof
+    let pid = req.params.pid.toString();
+    let milestone = parseInt(req.params.milestone);
+    let query = { projectid : pid, milestone: milestone };
+    const proof = await proofdb.findOne(query);
+    const imageUrl = proof.imageUrl
+    //Organise proof
+    let imageHash = []
+    for(let i = 0; i<imageUrl.length; i++){
+        const hash = crypto.createHash('sha256');
+
+        // Update the hash with the image data
+        hash.update(imageUrl[i]);
+        console.log(imageUrl[i])
+        // Calculate the hash digest
+        const hashDigest = hash.digest('hex')
+        imageHash.push(hashDigest)
+    }
+    console.log(imageHash.join())
+    //const hash = createHash(imageHash.join())
+    //console.log(hash)
+    //res.sendStatus(200)
+    
+    await createHash(imageHash.join()).then(async(hash) => {
+        // Use the resolved hash here
+        console.log(hash)
+        query = { _id : new ObjectId(pid) };
+        const body = await projectdb.findOne(query, { projection: {contract_address:1}});
+        let compareresult = await contract.getProof({contract_address:body.contract_address, milestone: milestone, hash: hash});
+        res.send(hash==compareresult)
+    });
+
+    
+})
+
+async function createHash(body){
+    // Create a hash object
+    const hash = crypto.createHash('sha256');
+    // Update the hash with the image data
+    hash.update(body);
+    // Calculate the hash digest
+    return hash.digest('hex')
 }
 
 module.exports = router;

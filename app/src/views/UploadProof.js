@@ -8,7 +8,7 @@ import '../styles/styles.css';
 const UploadProof = (props) => {
     const params = useParams()
     const [proofs, setproofs] = useState([]);
-    const [approval, setapproval] = useState([]);
+    const [pendingmil, setpendingmil] = useState(null);
     const [pendingProof, setpendingProof] = useState(false);
     const {state} = useLocation();
     const data = state.project;
@@ -17,15 +17,18 @@ const UploadProof = (props) => {
             await fetch(`http://localhost:3001/proof/${params.projectid}/proofs`).then(function(response) {
                 return response.json();
             }).then(function(data) {
-                setapproval(data[0])
-                let temp = data[0].length
-                delete data[0]
-                if(data[temp+1]){
-                  //Have approval pending proof
+                console.log(data)
+                if(data[0]){
+                  //setpendingProof(data[data[0]])
+                  setpendingmil(data[0])
                   setpendingProof(true)
                 }
-                //console.log(data);
-                setproofs(data);
+                //let temp = data[0].length
+                delete data[0]
+                if(data){
+                  //Have approval pending proof
+                  setproofs(data);
+                }
             }).catch(error => console.log(error.message));
             
         }
@@ -46,11 +49,11 @@ const UploadProof = (props) => {
             </div>
             )}
           </div>
-          {Object.entries(proofs).map(([milestone, proofList]) => (
+          {proofs.length !== 0 && Object.entries(proofs).map(([milestone, proofList]) => (
             <div key={milestone} style={{marginBottom: '30px'}}>
               <div style={{display: 'flex', alignItems: 'center'}}>
                 <h3 style={{color: '#005dba'}}>Milestone {milestone}</h3>
-                {approval[milestone-1]?
+                {milestone == pendingmil?
                 (<div className='milestone-complete-text proof-button'>Completed</div>):
                 (<div className='milestone-complete-text proof-button' style={{backgroundColor: '#bf0000'}}>Pending</div>)}
               </div>

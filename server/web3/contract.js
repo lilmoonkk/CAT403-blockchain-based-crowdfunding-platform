@@ -74,6 +74,12 @@ const getBalance = (async (req, callback) => {
     return Web3.utils.fromWei(balance, 'ether');;
 });
 
+const getProof = (async (req, callback) => {
+  const contract = new web3.eth.Contract(abi, req.contract_address);
+  let proof = await contract.methods.getProof(req.milestone).call()
+  return proof
+});
+
 const claim = (async (req, callback) => {
     const contract = new web3.eth.Contract(abi, req.contract_address);
     await contract.methods.claim(req.milestoneseq).send({ from: req.caller_address })
@@ -140,6 +146,7 @@ module.exports = {
     pledge,
     getPledged,
     getBalance,
+    getProof,
     claim,
     transfer,
     uploadProof,
