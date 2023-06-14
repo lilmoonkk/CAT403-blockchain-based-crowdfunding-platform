@@ -9,16 +9,16 @@ const StartProject = () => {
         name: '',
         desc: '',
         category: 'tech&innovation',
-        location: '',
         image: '',
-        video: '',
         campaign_period: 0,
         totalfund: 0.00,
         owner_address: sessionStorage.getItem('wallet_address')
     });
     const [milestones, setmilestones] = useState([]);
-    const [numMilestone, setnumMilestone] = useState(1);
+    const [numMilestone, setnumMilestone] = useState(2);
     const [myr, setmyr] = useState((0).toFixed(2))
+    const [selectedImages, setSelectedImages] = useState([]);
+    
 
     useEffect(() => {
         if(!sessionStorage.getItem('uid')){
@@ -51,22 +51,22 @@ const StartProject = () => {
 
     const handleSubmit = async(e) =>{
         e.preventDefault()
+
+        let formData = new FormData()
+        formData.append('images', selectedImages)
+        formData.append('uid', sessionStorage.getItem('uid'));
+        formData.append('project', JSON.stringify(project));
+        formData.append('milestones', JSON.stringify(milestones));
         
         const res = await fetch('/project/add',{
             method: 'post',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                uid: sessionStorage.getItem('uid'), 
-                project: project,
-                milestones: milestones
-            })
+            //headers: {'Content-Type': 'application/json'},
+            body: formData
         }).catch(error => alert(error.message));
         if(res.ok){
             alert('Your project have been submitted.')
             window.location.replace('/')
         }
-      
-        
     }
 
     const handleInputChange = (e) => {
@@ -75,6 +75,12 @@ const StartProject = () => {
           ...project,
           [name]: value,
         });
+    };
+
+    const handleImageUpload = (event) => {
+        //const file = event.target.files[0];
+        //setSelectedImage(URL.createObjectURL(file));
+        setSelectedImages(event.target.files[0]);
     };
 
     const addMilestone = () => {
@@ -113,6 +119,10 @@ const StartProject = () => {
                             <option value='creativeworks'>Creative Works</option>
                             <option value='communityprojects'>Community Projects</option>
                         </select>
+                    </div>
+                    <div className='project-input'>
+                        <label className='project-form-label'>Image</label>
+                        <input type="file" name="images" onChange={handleImageUpload} />
                     </div>
                     <div className='project-input'>
                         <label className='project-form-label'>Campaign period (day)</label>

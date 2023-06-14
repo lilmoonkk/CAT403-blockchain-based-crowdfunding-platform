@@ -17,7 +17,7 @@ const UploadProof = (props) => {
             await fetch(`http://localhost:3001/proof/${params.projectid}/proofs`).then(function(response) {
                 return response.json();
             }).then(function(data) {
-                console.log(data)
+                //console.log(data)
                 if(data[0]){
                   //setpendingProof(data[data[0]])
                   setpendingmil(data[0])

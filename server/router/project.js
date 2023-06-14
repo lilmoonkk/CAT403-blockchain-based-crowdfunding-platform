@@ -3,6 +3,7 @@
 // 1 Initialization
 var express = require('express');
 var router = express.Router();
+const firebase = require('../firebase');
 const connection = require('../connection')
 const ObjectId = require('mongodb').ObjectId; 
 const database = connection.db('Project');
@@ -10,6 +11,11 @@ const projectdb = database.collection('ProjectDetails');
 const contributiondb = database.collection('Contributions');
 const contract = require('../web3/contract');
 
+const multer = require('multer')
+const upload = multer();
+
+const { getStorage, ref, uploadBytes, getDownloadURL } = require('firebase/storage');
+const storage = getStorage(firebase.app);
 
 // 2 Get all projects
 router.get('/projects', async function(req, res){
@@ -40,29 +46,43 @@ router.get('/:link', async function(req, res){
 });
 
 // 4 Add project
-router.post('/add', async function(req, res){
+router.post('/add',upload.single('images'), async function(req, res){
+    let images = req.file;
     let body = req.body;
     try{
-        let payload = await reorganizePayload(body)
-        //console.log(payload)
-        projectdb.insertOne(payload);
+        const imageRef = ref(storage, 'projectimg/'+body.uid+body.name);
+        // Step 2. Upload the file in the bucket storage
+        uploadBytes(imageRef, images.buffer)
+        .then(() => {
+            return getDownloadURL(imageRef);
+        })
+        .then(url => {
+            let payload = reorganizePayload(body, url)
+            projectdb.insertOne(payload);
+            res.sendStatus(200)
+        })
+        
     } catch (err) {
         console.log("Failed because", err);
+        res.sendStatus(500)
     }
-    res.send(body)
+    //res.send(body)
 });
 
-function reorganizePayload(data){
+function reorganizePayload(data, url){
+    let project = JSON.parse(data.project);
+    let milestones = JSON.parse(data.milestones)
     let result = {};
-    for(let i = 0; i<data.milestones.length; i++){
-        data.milestones[i]['seq'] = i+1;
-        data.milestones[i]['amount'] = parseFloat(data.milestones[i]['amount']);
-        data.milestones[i]['percentage'] = (parseFloat(data.milestones[i]['amount'])/parseFloat(data.project.totalfund)).toFixed(5);
+    for(let i = 0; i<milestones.length; i++){
+        milestones[i]['seq'] = i+1;
+        milestones[i]['amount'] = parseFloat(milestones[i]['amount']);
+        milestones[i]['percentage'] = (parseFloat(milestones[i]['amount'])/parseFloat(project.totalfund)).toFixed(5);
     }
-    result = {...data.project};
+    result = {...project};
+    result['image'] = url;
     result['uid'] = data.uid;
-    result['milestone'] = data.milestones;
-    result['link'] = data.project.name.toLowerCase().replace(/\s+/g, '-');
+    result['milestone'] = milestones;
+    result['link'] = project.name.toLowerCase().replace(/\s+/g, '-');
     result['current_mil'] = 1;
     result['status'] = 'Submitted';
     //delete data.milestones;

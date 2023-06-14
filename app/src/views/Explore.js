@@ -25,7 +25,7 @@ const Explore = () => {
             <ExploreVerticalNav />
             <div className='cards-container'>
             {projects.map((card) => (
-                <Card key={card._id} body={card} />
+                card.uid !== sessionStorage.getItem('uid') && <Card key={card._id} body={card} />
             ))}
             </div>
         </div>

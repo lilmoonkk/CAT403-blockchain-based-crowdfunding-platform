@@ -188,7 +188,7 @@ router.get('/:id/proofs', async function(req, res){
                 result[0].push(milestone[i].approved)
             }
         }*/
-        console.log(result)
+        //console.log(result)
         res.send(result)
     } catch (err) {
         console.log("Failed because", err);
