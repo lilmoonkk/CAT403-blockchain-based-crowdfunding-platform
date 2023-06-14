@@ -13,6 +13,7 @@ import Contribution from './views/Contribution';
 import UploadProof from './views/UploadProof';
 import ViewProof from './views/ViewProof';
 import Admin from './views/Admin';
+import AdminLogin from './views/AdminLogin';
 
 function App() {
   return (
@@ -28,6 +29,10 @@ function App() {
         <Route path="start-a-project" element={<StartProject  />}/>
         <Route path="explore" element={<Explore  />}/>
         <Route path="project/:projectid" element={<Project  />}/>
+        <Route path="admin">
+          <Route index element={<Admin />} />
+          <Route path="login" element={<AdminLogin  />}/>
+        </Route>
         <Route path="admin" element={<Admin  />}/>
         <Route path="created-projects">
           <Route index element={<Profile />} />

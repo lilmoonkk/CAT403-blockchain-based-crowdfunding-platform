@@ -1,10 +1,15 @@
 import React from "react";
 import { Nav, NavLink, NavLogOut, NavMenu } from "./NavbarElements";
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 import '../styles/styles.css';
 
 const Navbar = () => {
 	const navigate = useNavigate();
+
+	const location = useLocation();
+
+	// Check if the current route matches any of the routes where the Navbar should be hidden
+	const hideNavbar = ['/admin', '/admin/login'].includes(location.pathname);
 
 	const Auth = () => {
 		return(
@@ -42,13 +47,17 @@ const Navbar = () => {
 			<NavLink className='title' to="/">
 				LETSFUND
 			</NavLink>
-			<NavLink to="/explore" activeStyle>
-				Explore
-			</NavLink>
-			<NavLink to="/start-a-project" activeStyle>
-				Start a project
-			</NavLink>
-			{sessionStorage.getItem('uid')? (<Profile />): (<Auth />)}
+			{!hideNavbar && 
+				<>
+					<NavLink to="/explore" activeStyle>
+						Explore
+					</NavLink>
+					<NavLink to="/start-a-project" activeStyle>
+						Start a project
+					</NavLink>
+					{sessionStorage.getItem('uid')? (<Profile />): (<Auth />)}
+				</>
+			}
 			</NavMenu>
 			
 		</Nav>

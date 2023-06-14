@@ -3,6 +3,16 @@ import '../styles/styles.css';
 
 const Admin = () => {
     const [projects, setprojects] = useState([]);
+    const [ready, setready] = useState(false);
+
+    useEffect(() => {
+        if(!sessionStorage.getItem('adminloggedin')){
+            alert('Please log in first')
+            window.location.replace('/admin/login')
+        }else{
+            setready(true)
+        }
+    }, []);
     
     useEffect(() => {
         async function fetchData(){
@@ -15,7 +25,7 @@ const Admin = () => {
         }
         
         fetchData()
-    }, []);
+    }, [ready]);
 
     const handleApprove = async(pid) => {
         const res = await fetch(`/project/${pid}/approve`,{
@@ -27,7 +37,7 @@ const Admin = () => {
         }
     }
 
-    return (
+    return ready && (
         <div className='profile-background' style={{display: 'flex'}}>
             
             
