@@ -25,6 +25,10 @@
     font-size: 25px;
 }
 
+button{
+    cursor: pointer;
+}
+
 .divider{
     border: 0.5px #808080 solid;
     margin: 30px 0 0;

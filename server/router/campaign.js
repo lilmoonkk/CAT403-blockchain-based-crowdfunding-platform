@@ -37,11 +37,18 @@ const verifySuccess = schedule.scheduleJob(rule, async function(){
     const body = await projectdb.find(query).toArray();
     
     body.forEach(element => {
-        var day = 24 * 60 * 60 * 1000;
-        var now = new Date().getTime() + 8 * 60 * 60 * 1000;
+        //var day = 24 * 60 * 60 * 1000;
+        //var now = new Date().getTime() + 8 * 60 * 60 * 1000;
         var end = new Date(element.end)
-        //console.log(now - element.end )
-        if( now - element.end > day ){
+        const deadline = new Date(
+            end.getFullYear(),
+            end.getMonth(),
+            end.getDate(),
+            23,
+            59,
+            0
+        ).getTime();
+        if( end.getTime() <= deadline ){
             let query = { _id : element._id };
             let update
             if(element.totalfund <= element.pledged){
@@ -150,7 +157,7 @@ async function returnHalfFund(projectid){
         //console.log(element)
         // Get the remaining percentage
         let remaining = 1
-        for (let i=0; i<element.currentmil-1; i++){
+        for (let i=0; i<element.currentmil; i++){
             remaining = remaining - element.milestones[i].percentage
         }
 
@@ -180,9 +187,16 @@ const verifyComplete = schedule.scheduleJob(rule, async function(){
     const body = await proofdb.find(query).toArray();
     
     body.forEach(element => {
-        var day = 24 * 60 * 60 * 1000;
-        var now = new Date().getTime() + 8 * 60 * 60 * 1000;
-        if( now - element.end > day ){
+        var end = new Date(element.end)
+        const deadline = new Date(
+            end.getFullYear(),
+            end.getMonth(),
+            end.getDate(),
+            23,
+            59,
+            0
+        ).getTime();
+        if( end.getTime() <= deadline ){
             const options = {
                 url: 'http://localhost:3000/proof/conclude',
                 method: 'PUT',
