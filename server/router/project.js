@@ -25,8 +25,15 @@ router.get('/projects', async function(req, res){
     res.send(body);
 });
 
-router.get('/projects/admin', async function(req, res){
-    const body = await projectdb.find({}).sort({ _id: -1 }).toArray();
+router.get('/projects/admin/:status', async function(req, res){
+    let type = {
+        'pending' : 'Submitted',
+        'approved' : 'Approved',
+        'rejected' : 'Rejected'
+    }
+    let status = req.params.status.toString();
+    let query = { status : type[status] };
+    const body = await projectdb.find(query).sort({ _id: -1 }).toArray();
     //console.log(body[0].email) //it would output email of first object
     res.send(body);
 });
@@ -120,8 +127,21 @@ router.put('/:id/approve', async function(req, res){
             const duration = 1000 * 60 * 60 * 24 * body.campaign_period;
             const end = current + duration;
             projectdb.updateOne(query, { $set: { status: 'Approved', start: current, end: end, pledged: 0, contract_address: value } });
+            res.sendStatus(200);
         }); //get projectid, milestone and wallet address and fing variable for array of objects
         
+        
+    } catch (err) {
+        console.log("Failed because", err);
+    }
+});
+
+router.put('/:id/reject', async function(req, res){
+    let projectid = req.params.id.toString();
+    let query = { _id : new ObjectId(projectid) };
+    try{
+        const current = new Date().getTime() + 8 * 60 * 60 * 1000;
+        projectdb.updateOne(query, { $set: { status: 'Rejected', end: current } }); 
         res.sendStatus(200);
     } catch (err) {
         console.log("Failed because", err);

@@ -9,7 +9,7 @@ const Navbar = () => {
 	const location = useLocation();
 
 	// Check if the current route matches any of the routes where the Navbar should be hidden
-	const hideNavbar = ['/admin', '/admin/login'].includes(location.pathname);
+	const hideNavbar = ['/admin', '/admin/login', '/admin/approved', '/admin/rejected'].includes(location.pathname);
 
 	const Auth = () => {
 		return(
@@ -37,6 +37,9 @@ const Navbar = () => {
 	
 	const logout = () => {
 		sessionStorage.removeItem('uid');
+		if(sessionStorage.getItem('adminloggedin')){
+			sessionStorage.removeItem('adminloggedin')
+		}
 		navigate('/');
 	}
 
@@ -47,8 +50,8 @@ const Navbar = () => {
 			<NavLink className='title' to="/">
 				LETSFUND
 			</NavLink>
-			{!hideNavbar && 
-				<>
+			{!hideNavbar ? 
+				(<>
 					<NavLink to="/explore" activeStyle>
 						Explore
 					</NavLink>
@@ -56,7 +59,21 @@ const Navbar = () => {
 						Start a project
 					</NavLink>
 					{sessionStorage.getItem('uid')? (<Profile />): (<Auth />)}
-				</>
+				</>):
+				(<>
+					<NavLink to='/admin' activeStyle>
+						Pending approval
+					</NavLink>
+					<NavLink onClick={() => window.location.replace('/admin/approved')} activeStyle>
+						Approved
+					</NavLink>
+					<NavLink onClick={() => window.location.replace('/admin/rejected')} activeStyle>
+						Rejected
+					</NavLink>
+					<NavLogOut onClick={logout}>
+						Log out
+					</NavLogOut>
+				</>)
 			}
 			</NavMenu>
 			

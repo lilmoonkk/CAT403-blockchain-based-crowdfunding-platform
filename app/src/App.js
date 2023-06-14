@@ -33,7 +33,7 @@ function App() {
           <Route index element={<Admin />} />
           <Route path="login" element={<AdminLogin  />}/>
         </Route>
-        <Route path="admin" element={<Admin  />}/>
+        <Route path="admin/:status" element={<Admin  />}/>
         <Route path="created-projects">
           <Route index element={<Profile />} />
           <Route path=":projectid/proofs" element={<UploadProof  />}/>
