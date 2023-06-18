@@ -3,15 +3,23 @@ import { useParams,  useLocation } from "react-router-dom"
 import '../styles/styles.css';
 import Timer from '../components/Timer';
 
-
 const ViewProof = (props) => {
     const params = useParams()
     const [proofs, setproofs] = useState([]);
     const [pendingmil, setpendingmil] = useState([]);
     const [pendingProof, setpendingProof] = useState(null);
+    const [curmil, setcurmil] = useState(0);
     const {state} = useLocation();
     const milestoneData = state.milestone;
+    
     useEffect(() => {
+        for(let i=0; i<milestoneData.length; i++){
+          if(!milestoneData.approved){
+            setcurmil(i)
+            break
+          }
+        }
+
         async function fetchData(){
             await fetch(`/proof/${params.projectid}/proofs`).then(function(response) {
                 return response.json();
@@ -80,7 +88,7 @@ const ViewProof = (props) => {
         }
     }).catch(error => console.log(error.message));
     };
-  
+    
     return (
       <div class='proof-bg'>
         <div class='proof-container'>
@@ -106,6 +114,19 @@ const ViewProof = (props) => {
             </div>
             </div>
           )}
+          <div className="timeline">
+            <div className="line" />
+            {[...Array(milestoneData.length)].map((_, index) => (
+              
+              <div
+                key={index}
+                className={`timeline-item ${curmil >= index ? 'active' : ''}`}
+                //onClick={() => handleIndexChange(index)}
+              >
+                <div className='timeline-text'>Milestone {index+1}</div>
+              </div>
+            ))}
+          </div>
           {proofs.length !== 0 && Object.entries(proofs).map(([milestone, proofList]) => (
             <div key={milestone}>
               <div style={{display: 'flex', alignItems: 'center'}}>

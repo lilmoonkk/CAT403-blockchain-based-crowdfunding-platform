@@ -682,4 +682,43 @@ button{
     margin: 10px 0px;
 }
 
+/* Timeline */
+  
+.timeline {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 40px;
+margin-top: 10px;
+}
+
+.timeline-item {
+/*flex-grow: 1;*/
+background-color: #fff;
+padding: 10px;
+border: 1px solid #ccc;
+border-radius: 50%;
+cursor: pointer;
+height: 20px;
+width: 20px;
+transition: background-color 0.3s ease;
+z-index: 1;
+}
+
+.timeline-item.active {
+background-color: #4caf50;
+}
+
+.line {
+    border: 2px solid #ccc;
+    width: 99%;
+    position: absolute;
+}
+
+.timeline-text{
+    margin: -35px;
+    position: relative;
+    text-align: center;
+}
+
 
