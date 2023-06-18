@@ -91,6 +91,10 @@ contract project{
         return keccak256(abi.encodePacked(proofs[seq])) == keccak256(abi.encodePacked(_proof));
     }
 
+    function getResponse(uint seq) public view returns (string memory){
+        return milestones[seq].response;
+    }
+
     function claim(uint milestoneseq) external {
         company.transfer(milestones[milestoneseq].amount);
 

@@ -75,9 +75,15 @@ const getBalance = (async (req, callback) => {
 });
 
 const getProof = (async (req, callback) => {
-  const contract = new web3.eth.Contract(abi, req.contract_address);
-  let proof = await contract.methods.getProof(req.milestone).call()
-  return proof
+    const contract = new web3.eth.Contract(abi, req.contract_address);
+    let proof = await contract.methods.getProof(req.milestone).call()
+    return proof
+});
+
+const getResponse = (async (req, callback) => {
+    const contract = new web3.eth.Contract(abi, req.contract_address);
+    let response = await contract.methods.getResponse(req.milestone).call()
+    return response
 });
 
 const claim = (async (req, callback) => {
@@ -147,6 +153,7 @@ module.exports = {
     getPledged,
     getBalance,
     getProof,
+    getResponse,
     claim,
     transfer,
     uploadProof,

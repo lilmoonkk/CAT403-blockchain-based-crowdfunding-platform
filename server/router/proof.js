@@ -257,6 +257,7 @@ async function concludeApproval(milestone, pid){
 
             // Calculate the hash digest
             const hashDigest = hash.digest('hex');
+            console.log('hash', hashDigest)
             contract.uploadResponse(
                 {
                 contract_address: addresses.contract_address,
@@ -271,7 +272,7 @@ async function concludeApproval(milestone, pid){
             )
 
         } else {
-            projectdb.updateOne({ _id : new ObjectId(pid) }, {$set: {"milestone.$[elem].approved": approved}},{arrayFilters: [{ "elem.seq": milestone }]});
+            projectdb.updateOne({ _id : new ObjectId(pid) }, {$set: {"milestone.$[elem].approved": approved, status: 'Milestone Rejected'}},{arrayFilters: [{ "elem.seq": milestone }]});
             proofdb.updateOne({ projectid : pid, milestone: parseInt(milestone) }, {$set: {status: 'Rejected'}});
         }
     } catch (err) {
@@ -287,6 +288,8 @@ router.get('/verify/:pid/:milestone', async function(req, res){
     let query = { projectid : pid, milestone: milestone };
     const proof = await proofdb.findOne(query);
     const imageUrl = proof.imageUrl
+    let proofsame
+    let responsesame
     //Organise proof
     let imageHash = []
     for(let i = 0; i<imageUrl.length; i++){
@@ -294,25 +297,63 @@ router.get('/verify/:pid/:milestone', async function(req, res){
 
         // Update the hash with the image data
         hash.update(imageUrl[i]);
-        console.log(imageUrl[i])
+        //console.log(imageUrl[i])
         // Calculate the hash digest
         const hashDigest = hash.digest('hex')
         imageHash.push(hashDigest)
     }
-    console.log(imageHash.join())
+    //console.log(imageHash.join())
     //const hash = createHash(imageHash.join())
     //console.log(hash)
     //res.sendStatus(200)
     
     await createHash(imageHash.join()).then(async(hash) => {
         // Use the resolved hash here
-        console.log(hash)
+        //console.log(hash)
         query = { _id : new ObjectId(pid) };
         const body = await projectdb.findOne(query, { projection: {contract_address:1}});
-        let compareresult = await contract.getProof({contract_address:body.contract_address, milestone: milestone, hash: hash});
-        res.send(hash==compareresult)
+        let compareresult = await contract.getProof({contract_address:body.contract_address, milestone: milestone});
+        proofsame = (hash==compareresult)
     });
 
+    //Verify response
+    const response = await responsedb.find(query).toArray();
+    let approve = 0
+    let reject = 0
+    let s = ""
+    // Count the result
+    response.forEach(element => {
+        //Generate hashing material
+        s += element.uid
+        s += element.approved
+
+        if(element.approved){
+            approve += 1
+        } else {
+            reject += 1
+        }
+    })
+    // Conclude the result
+    let overall = approve + reject
+    let approved = false
+    if(approve >= (overall / 3 * 2)){
+        approved = true
+        s = approved + s
+        await createHash(s).then(async(hash) => {
+            // Use the resolved hash here
+            console.log(hash)
+            query = { _id : new ObjectId(pid) };
+            const body = await projectdb.findOne(query, { projection: {contract_address:1}});
+            let compareresult = await contract.getResponse({contract_address:body.contract_address, milestone: milestone});
+            responsesame = (hash==compareresult)
+        });
+
+    }
+    if(proofsame && responsesame){
+        res.send(true)
+    }else{
+        res.send(false)
+    }
     
 })
 
