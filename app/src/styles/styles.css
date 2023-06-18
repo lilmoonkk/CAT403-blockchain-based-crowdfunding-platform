@@ -481,18 +481,28 @@ button{
 
 .col-amount{
     margin: 0 20px;
-    width: 15%;
+    width: 10%;
 }
 
 .col-tx{
     margin: 0 20px;
-    width: 45%;
+    width: 20%;
     word-wrap: break-word;
 }
 
 .col-time{
     margin: 0 20px;
-    width: 10%;
+    width: 12%;
+}
+
+.col-status{
+    margin: 0 20px;
+    width: 15%;
+}
+
+.col-proof{
+    margin: 0 20px;
+    width: 7%;
 }
 
 .total-cont{
@@ -664,6 +674,12 @@ button{
     border-radius: 10px;
     margin-top: 15px;
     padding: 0 20px;
+}
+
+.project-status{
+    border: 2px solid #ccc;
+    color: black;
+    margin: 10px 0px;
 }
 
 

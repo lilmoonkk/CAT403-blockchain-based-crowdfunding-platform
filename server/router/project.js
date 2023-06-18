@@ -237,7 +237,8 @@ router.get('/:uid/contributions', async function(req, res){
                   txhash: 1,
                   link: { $arrayElemAt: ["$result.link", 0] },
                   projectid: 1,
-                  milestone: { $arrayElemAt: ["$result.milestone", 0] }
+                  milestone: { $arrayElemAt: ["$result.milestone", 0] },
+                  status: { $arrayElemAt: ["$result.status", 0] }
                 }
             },
             {
@@ -248,7 +249,8 @@ router.get('/:uid/contributions', async function(req, res){
                     txhash: 1,
                     link: 1,
                     projectid: 1,
-                    milestone: 1
+                    milestone: 1,
+                    status: 1
 
                 }
             }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams,  useLocation } from "react-router-dom"
 import '../styles/styles.css';
+import Timer from '../components/Timer';
 
 
 const ViewProof = (props) => {
@@ -8,7 +9,6 @@ const ViewProof = (props) => {
     const [proofs, setproofs] = useState([]);
     const [pendingmil, setpendingmil] = useState([]);
     const [pendingProof, setpendingProof] = useState(null);
-    const [feedback, setfeedback] = useState("");
     const {state} = useLocation();
     const milestoneData = state.milestone;
     useEffect(() => {
@@ -60,19 +60,13 @@ const ViewProof = (props) => {
           uid: sessionStorage.getItem('uid'),
           projectid: params.projectid,
           milestone: milestone,
-          approved: false,
-          feedback: feedback
+          approved: false
         })
     }).catch(error => alert(error.message));
     if(res.ok){
       alert('You have placed your proofs successfully!')
         //window.location.replace('/')
     }
-    };
-
-    const handleFeedback = (e) => {
-      const { value } = e.target.value;
-      setfeedback(value);
     };
 
     const handleVerify = async(milestone) => {
@@ -106,9 +100,9 @@ const ViewProof = (props) => {
                 <button className='proof-button approve-button' onClick={()=>handleApprove(pendingmil)}>Approve</button>
                 <button className='proof-button approve-button' style={{backgroundColor: '#bf0000'}} onClick={()=>handleReject(pendingmil)}>Reject</button>
             </div>
-            <div>
-              <label className="project-form-label">Feedback</label>
-              <textarea className="project-form-input" type="text" name="feedback" id="feedback" onChange={handleFeedback}/>
+            <div style={{display:'flex'}}>
+              <Timer targetDate={pendingProof.end} />
+              <p>left</p>
             </div>
             </div>
           )}

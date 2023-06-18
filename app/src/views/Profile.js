@@ -7,6 +7,15 @@ import {Link} from 'react-router-dom';
 
 const Profile = () => {
     const [projects, setprojects] = useState([]);
+    const status = {
+        'Approved' : 'Funding Campaign Ongoing',
+        'Started' : 'Project Ongoing',
+        'Milestone Rejected' : 'Terminated',
+        'Waiting for proof approval' : 'Project Ongoing',
+        'Submitted' : 'Submitted',
+        'Claimable' : 'Claimable'
+    }
+    
     
     useEffect(() => {
         const uid= sessionStorage.getItem('uid')
@@ -69,13 +78,16 @@ const Profile = () => {
                                 <p>{project.pledged?project.pledged.toFixed(5):0} ETH raised / {project.totalfund} ETH</p>
                                 {project.pledged >= project.totalfund&&<Tick />}
                             </div>
-                            {project.status == 'Claimable'&&
-                            (<>
-                                <p style={{fontSize: "0.9em",color: "#808080"}}>You are now eligible to claim fund for milestone {project.current_mil}</p>
-                                <button className='proof-button' style={{background: '#4caf50', margin: '0'}} onClick={() => handleClaim(project)}>Claim Now</button>
-                            </>)}
+                            <div className='project-status proof-button' >{status[project.status]}</div>
                         </div>
-                        <button className='profile-proof-button'><Link style={{textDecoration: "none", color: "#fff"}} to={{ pathname: `${project._id}/proofs`}} state= {{project:project}} >Proof</Link></button>
+                        <div style={{width: '105px'}}>
+                            <button className='profile-proof-button'><Link style={{textDecoration: "none", color: "#fff"}} to={{ pathname: `${project._id}/proofs`}} state= {{project:project}} >Proof</Link></button>
+                            {project.status == 'Claimable'&&
+                            (
+                                <button className='proof-button' style={{background: '#4caf50'}} onClick={() => handleClaim(project)}>Claim</button>
+                            )}
+                        </div>
+                        
                     </div>
                 </>
             ))}

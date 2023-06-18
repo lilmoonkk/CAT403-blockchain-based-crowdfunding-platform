@@ -54,7 +54,7 @@ const History = () => {
                             <div className='profile-project-comparison'>
                                 <p>{project.pledged?project.pledged.toFixed(5):0} ETH raised / {project.totalfund} ETH</p>
                             </div>
-                            <div className='milestone-complete-text proof-button' style={{margin: '10px 0'}}>{status[project.status]}</div>
+                            <div className='project-status proof-button' >{status[project.status]}</div>
                             
                         </div>
                         {<button className='profile-proof-button'><Link style={{textDecoration: "none", color: "#fff"}} to={{ pathname: `/contributions/${project._id}/proofs`}} state= {{milestone:project.milestone}} >Proof</Link></button>}
