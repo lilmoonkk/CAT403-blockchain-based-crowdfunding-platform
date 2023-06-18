@@ -21,6 +21,14 @@ router.get('/users', async function(req, res){
     res.send(body);
 });
 
+// Get one user
+router.get('/:uid', async function(req, res){
+    let uid = req.params.uid.toString();
+    const body = await userdb.findOne({_id: uid});
+    //console.log(body[0].email) //it would output email of first object
+    res.send(body);
+});
+
 // 3 Add user
 router.post('/add', async function(req, res){
     let body = req.body;

@@ -206,7 +206,7 @@ router.put('/claim', async function(req, res){
     await contract.claim({contract_address:body.contract_address, caller_address:body.caller_address, milestoneseq:body.milestoneseq}, function(value){
         console.log('value',value)
         let timestamp = new Date().getTime() + 8 * 60 * 60 * 1000;
-        projectdb.updateOne({ 'contract_address':body.contract_address, 'milestone.seq': body.milestoneseq}, { $set: { 'milestone.$.txhash': value, 'milestone.$.timestamp': timestamp } });
+        projectdb.updateOne({ 'contract_address':body.contract_address, 'milestone.seq': body.milestoneseq}, { $set: { 'milestone.$.txhash': value, 'milestone.$.timestamp': timestamp , status: 'Started'} });
     });
     res.sendStatus(200);
 });

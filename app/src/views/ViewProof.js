@@ -17,13 +17,13 @@ const ViewProof = (props) => {
                 return response.json();
             }).then(function(data) {
               console.log('data', data)
-                setpendingmil(data[0])
                 if(data[0]){
+                  setpendingmil(data[0])
                   setpendingProof(data[data[0]])
                   delete data[data[0]]
+                  delete data[0]
                 }
                 //let temp = data[0].length
-                delete data[0]
                 if(data){
                   //Have approval pending proof
                   setproofs(data);

@@ -652,10 +652,18 @@ button{
     justify-content: center;
 }
 
-.upload-proof-bg-clicked{
+/* History */
+
+.history-background{
+    display: grid;
+    justify-content: center;
 }
 
-.upload-proof-bg-unclicked{
+.user-container{
+    background: #fa640026;
+    border-radius: 10px;
+    margin-top: 15px;
+    padding: 0 20px;
 }
 
 
