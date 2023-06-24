@@ -10,8 +10,13 @@ const History = () => {
     const status = {
         'Approved' : 'Funding Campaign Ongoing',
         'Started' : 'Project Ongoing',
-        'Milestone Rejected' : 'Terminated',
-        'Waiting for proof approval' : 'Project Ongoing'
+        'Milestone Rejected' : 'Unsuccessful',
+        'Waiting for proof approval' : 'Project Ongoing',
+        'Claimable' : 'Project Ongoing',
+        'All returned' : ' Unsuccessful',
+        'Half returned' : 'Unsuccessful',
+        'Rejected' : 'Rejected', 
+        'Unsuccessful' : 'Unsuccessful'
     }
     
     useEffect(() => {

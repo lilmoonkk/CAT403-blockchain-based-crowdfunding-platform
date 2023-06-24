@@ -43,7 +43,7 @@ router.get('/projects/admin/:status', async function(req, res){
 });
 
 // 3 Get individual project
-router.get('/:link', async function(req, res){
+router.get('/:link/get', async function(req, res){
     let projectid = req.params.link.toString();
     let query = { link : projectid };
     try{

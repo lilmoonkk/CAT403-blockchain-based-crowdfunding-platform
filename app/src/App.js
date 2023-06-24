@@ -30,7 +30,7 @@ function App() {
         <Route path="start-a-project" element={<StartProject  />}/>
         <Route path="explore" element={<Explore  />}/>
         <Route path="project/:projectid" element={<Project  />}/>
-        <Route path="user/:uid" element={<History  />}/>
+        <Route path="user/:uid/history" element={<History  />}/>
         <Route path="admin">
           <Route index element={<Admin />} />
           <Route path="login" element={<AdminLogin  />}/>

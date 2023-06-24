@@ -13,7 +13,7 @@ const Project = () => {
 
     useEffect(() => {
         async function fetchData(){
-            await fetch(`/project/${params.projectid}`).then(function(response) {
+            await fetch(`/project/${params.projectid}/get`).then(function(response) {
                 return response.json();
             }).then(function(data) {
                 //console.log(data);
@@ -96,10 +96,11 @@ const Project = () => {
                   <Timer targetDate={project.end} />
                   <p>left</p>
                 </div>
-                <div>
+                <div style={{marginBottom: '20px'}}>
                   <p>{project.pledged?project.pledged.toFixed(5):0} ETH raised / {project.totalfund} ETH</p>
                   <ProgressBar completed={(project.pledged/project.totalfund)*100 > 100 ? 100 : (project.pledged/project.totalfund)*100} />
                 </div>
+                <a className='know-more-text' href={`/user/${project.uid}/history`}>Want to know about company's history?</a>
             </div>
         </div>
         <div className='divider'></div>
@@ -115,6 +116,7 @@ const Project = () => {
             ))}
             </div>
         </div>
+        { project.status == 'Approved' || project.uid !== sessionStorage.getItem('uid') &&
         <div className='pledge-container'>
             <form>
               <div style={{display:"flex"}}>
@@ -126,7 +128,7 @@ const Project = () => {
               </div>
             </form>
             <button className='proof-button' style={{background: '#4caf50', margin: '0 30px 0 20px'}} onClick={handlePledge}>Pledge</button>
-        </div>
+        </div>}
             
       </div>
     );

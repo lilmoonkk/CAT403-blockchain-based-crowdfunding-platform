@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Tick} from '../components/svg/Tick.jsx'
 import VerticalNav from '../components/VerticalNav';
-import ImageUpload from '../components/ImageUpload';
 import '../styles/styles.css';
 import {Link} from 'react-router-dom';
 
@@ -10,10 +9,13 @@ const Profile = () => {
     const status = {
         'Approved' : 'Funding Campaign Ongoing',
         'Started' : 'Project Ongoing',
-        'Milestone Rejected' : 'Terminated',
+        'Milestone Rejected' : 'Unsuccessful',
         'Waiting for proof approval' : 'Project Ongoing',
-        'Submitted' : 'Submitted',
-        'Claimable' : 'Claimable'
+        'Claimable' : 'Project Ongoing',
+        'All returned' : ' Unsuccessful',
+        'Half returned' : 'Unsuccessful',
+        'Rejected' : 'Rejected', 
+        'Unsuccessful' : 'Unsuccessful'
     }
     
     

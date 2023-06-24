@@ -20,7 +20,7 @@ const UploadProof = (props) => {
                 //console.log(data)
                 if(data[0]){
                   //setpendingProof(data[data[0]])
-                  setpendingmil(data[0])
+                  setpendingmil(data[0].milestone)
                   setpendingProof(true)
                 }
                 //let temp = data[0].length
@@ -53,7 +53,7 @@ const UploadProof = (props) => {
             <div key={milestone} style={{marginBottom: '30px'}}>
               <div style={{display: 'flex', alignItems: 'center'}}>
                 <h3 style={{color: '#005dba'}}>Milestone {milestone}</h3>
-                {milestone == pendingmil?
+                {!pendingmil?
                 (<div className='milestone-complete-text proof-button'>Completed</div>):
                 (<div className='milestone-complete-text proof-button' style={{backgroundColor: '#bf0000'}}>Pending</div>)}
               </div>
