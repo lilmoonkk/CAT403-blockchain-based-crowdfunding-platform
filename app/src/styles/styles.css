@@ -262,6 +262,9 @@ button{
     height: 1px;
     background: black;
 }*/
+.know-more-text{
+    font-size: 14px;
+}
 
 .milestone-card{
     background-color: rgb(254, 234, 227);
@@ -517,11 +520,13 @@ button{
 /* Admin */
 
 .admin-background{
-    background-color: rgb(254,248,246);;
+    background-color: rgb(254,248,246);
+    display: flex;
+    min-height: calc(100vh - 60px);
 }
 
 .admin-table{
-    margin: auto;
+    margin: 0 auto;
     margin-bottom: 5%;
     width: 90%;
 }

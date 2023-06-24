@@ -26,14 +26,18 @@ router.get('/projects', async function(req, res){
 });
 
 router.get('/projects/admin/:status', async function(req, res){
-    let type = {
-        'pending' : 'Submitted',
-        'approved' : 'Approved',
-        'rejected' : 'Rejected'
+    let query = {
+        'pending' : { status : 'Submitted' },
+        'approved' : {
+            $nor: [
+              { status: 'Submitted' },
+              { status: 'Rejected' }
+            ]
+        },
+        'rejected' : { status : 'Rejected' }
     }
     let status = req.params.status.toString();
-    let query = { status : type[status] };
-    const body = await projectdb.find(query).sort({ _id: -1 }).toArray();
+    const body = await projectdb.find(query[status]).sort({ _id: -1 }).toArray();
     //console.log(body[0].email) //it would output email of first object
     res.send(body);
 });

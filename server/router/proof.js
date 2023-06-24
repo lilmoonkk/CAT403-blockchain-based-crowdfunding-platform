@@ -175,7 +175,7 @@ router.get('/:id/proofs', async function(req, res){
             //console.log(element)
             result[element.milestone] = element.imageUrl
             if(element.status == 'Pending'){
-                result[0] = element.milestone
+                result[0] = {milestone:element.milestone, end:element.end}
             }
         })
         /*result[0] = [] //to record approval of each milestone

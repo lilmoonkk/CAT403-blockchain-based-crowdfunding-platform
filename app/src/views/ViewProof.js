@@ -24,13 +24,13 @@ const ViewProof = (props) => {
             await fetch(`/proof/${params.projectid}/proofs`).then(function(response) {
                 return response.json();
             }).then(function(data) {
-              console.log('data', data)
                 if(data[0]){
                   setpendingmil(data[0])
-                  setpendingProof(data[data[0]])
-                  delete data[data[0]]
+                  setpendingProof(data[data[0].milestone])
+                  delete data[data[0].milestone]
                   delete data[0]
                 }
+                
                 //let temp = data[0].length
                 if(data){
                   //Have approval pending proof
@@ -92,28 +92,6 @@ const ViewProof = (props) => {
     return (
       <div class='proof-bg'>
         <div class='proof-container'>
-          {pendingProof && (
-          <div className='pending-proof-container'>
-            <h3 style={{color: '#005dba'}}>Milestone {pendingmil}</h3>
-            <p style={{fontWeight: '600'}}>{milestoneData[pendingmil].title}</p>
-            <p style={{fontStyle: 'italic'}}>{milestoneData[pendingmil].desc && milestoneData[pendingmil].desc }</p>
-            <div className='proof-img-row-container' style={{justifyContent: 'center'}}>
-            {pendingProof.map((proof) => (
-              <div key={proof._id} className='proof-img-container'>
-                <img src={proof} alt="Proof" class='proof-img'/>
-              </div>
-            ))}
-            </div>
-            <div style={{marginTop: '10px'}}>
-                <button className='proof-button approve-button' onClick={()=>handleApprove(pendingmil)}>Approve</button>
-                <button className='proof-button approve-button' style={{backgroundColor: '#bf0000'}} onClick={()=>handleReject(pendingmil)}>Reject</button>
-            </div>
-            <div style={{display:'flex'}}>
-              <Timer targetDate={pendingProof.end} />
-              <p>left</p>
-            </div>
-            </div>
-          )}
           <div className="timeline">
             <div className="line" />
             {[...Array(milestoneData.length)].map((_, index) => (
@@ -127,6 +105,29 @@ const ViewProof = (props) => {
               </div>
             ))}
           </div>
+          {pendingProof && (
+          <div className='pending-proof-container'>
+            <h3 style={{color: '#005dba'}}>Milestone {pendingmil.milestone}</h3>
+            <p style={{fontWeight: '600'}}>{milestoneData[pendingmil.milestone-1].title}</p>
+            <p style={{fontStyle: 'italic'}}>{milestoneData[pendingmil.milestone-1].desc && milestoneData[pendingmil.milestone-1].desc }</p>
+            <div className='proof-img-row-container' style={{justifyContent: 'center'}}>
+            {pendingProof.map((proof) => (
+              <div key={proof._id} className='proof-img-container'>
+                <img src={proof} alt="Proof" class='proof-img'/>
+              </div>
+            ))}
+            </div>
+            <div style={{marginTop: '10px'}}>
+                <button className='proof-button approve-button' onClick={()=>handleApprove(pendingmil.milestone)}>Approve</button>
+                <button className='proof-button approve-button' style={{backgroundColor: '#bf0000'}} onClick={()=>handleReject(pendingmil.milestone)}>Reject</button>
+            </div>
+            <div style={{display:'flex', justifyContent: 'center'}}>
+              <Timer targetDate={pendingmil.end} />
+              <p>left</p>
+            </div>
+            </div>
+          )}
+          
           {proofs.length !== 0 && Object.entries(proofs).map(([milestone, proofList]) => (
             <div key={milestone}>
               <div style={{display: 'flex', alignItems: 'center'}}>

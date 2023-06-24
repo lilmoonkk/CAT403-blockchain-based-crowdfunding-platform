@@ -66,9 +66,7 @@ const Admin = () => {
     }
 
     return ready && (
-        <div className='admin-background' style={{display: 'flex'}}>
-            
-            
+        <div className='admin-background'>
             <div className='admin-table'>
                 <div className='admin-table-header'>
                     <div className='col-admin-project'>Name</div>
