@@ -27,31 +27,31 @@ const Admin = () => {
         }
     }, [ready]);
     
-    useEffect(() => {
-        let url = `/project/projects/admin/${status}`;
-      
-        async function fetchData() {
-          await fetch(url)
+    async function fetchData() {
+        await fetch(`/project/projects/admin/${status}`)
             .then(function (response) {
-              return response.json();
+            return response.json();
             })
             .then(function (data) {
-              setprojects(data);
+            setprojects(data);
             })
             .catch((error) => console.log(error.message));
-        }
-      
+    }
+
+    useEffect(() => {
         if (status !== null) {
           fetchData();
         }
     }, [status]);
+
     const handleApprove = async(pid) => {
         const res = await fetch(`/project/${pid}/approve`,{
             method: 'put',
             headers: {'Content-Type': 'application/json'}
         }).catch(error => alert(error.message));
         if(res.ok){
-            alert(`You have approved the project`)
+            //alert(`You have approved the project`)
+            fetchData()
         }
     }
 
@@ -61,7 +61,8 @@ const Admin = () => {
             headers: {'Content-Type': 'application/json'}
         }).catch(error => alert(error.message));
         if(res.ok){
-            alert(`You have rejected the project`)
+            //alert(`You have rejected the project`)
+            fetchData()
         }
     }
 

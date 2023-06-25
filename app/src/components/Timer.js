@@ -21,7 +21,7 @@ const Timer = ({ targetDate }) => {
       timeLeft = 0;
     }
 
-    const days = Math.floor(timeLeft / (24 * 60 * 60))-1;
+    const days = Math.floor(timeLeft / (24 * 60 * 60));
     const hours = Math.floor((timeLeft / (60 * 60)) % 24);
     const minutes = Math.floor((timeLeft / 60) % 60);
     const seconds = Math.floor(timeLeft % 60);
