@@ -52,7 +52,9 @@ router.post('/login', async function(req, res){
     try{
         await firebase.signInUser(body.email, body.password, async function(value){
             //insert uid to database along with other data
-            if(body.email !== 'letsfund_admin@gmail.com'){
+            if(value == null){
+                res.sendStatus(400)
+            } else if (body.email !== 'letsfund_admin@gmail.com'){
                 const body = await userdb.findOne({ _id : value }, {projection: {wallet_address: 1}});
                 res.send({uid: value, wallet_address: body.wallet_address});
             } else {

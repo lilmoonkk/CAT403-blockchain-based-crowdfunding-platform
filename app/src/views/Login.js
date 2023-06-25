@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 import '../styles/styles.css'
+import SnackBar from '../components/Snackbar';
   
 const Login = () => {
     const [email, setemail] = useState('');
     const [pw, setpw] = useState('');
+    const [open, setOpen] = useState(false);
 
     const handleSubmit = async() =>{
         const res = await fetch('/user/login',{
@@ -20,6 +22,11 @@ const Login = () => {
             sessionStorage.setItem('uid', data.uid);
             sessionStorage.setItem('wallet_address', data.wallet_address);
             window.location.replace('/')
+        } else {
+            setOpen(true)
+            setTimeout(() => {
+                setOpen(false)
+            }, 2000);
         }
         
         
@@ -27,6 +34,7 @@ const Login = () => {
 
     return (
         <div className="auth-background">
+            <SnackBar message="Invalid email or password" open={open} fail={true} />
             <div className="form" style={{height: '350px'}}>
                 <h1>Welcome Back !</h1>
                 <p>Log in to continue</p>

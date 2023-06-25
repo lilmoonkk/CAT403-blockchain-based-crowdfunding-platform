@@ -214,6 +214,12 @@ button{
     margin-bottom: 0;
 }
 
+.warning-text{
+    color: red;
+    font-size: 0.75em;
+    padding: 0 50px 10px;
+    text-align: start;
+}
 /* Explore */
 
 .card{
@@ -315,6 +321,7 @@ button{
     display: block;
     height: 400px;
     margin: auto;
+    max-width: 700px;
 }
 
 .project-img-container{

@@ -33,7 +33,7 @@ const signInUser = (email, password, callback) => {
         //const user = userCredentials.user;
         //window.alert('Successfully Registered with' + ('\n') + email);
         callback(userCredentials.user.uid);
-    }).catch(error => console.log(error.message))
+    }).catch(error => callback())
 }
 
 const signOutUser = () => {

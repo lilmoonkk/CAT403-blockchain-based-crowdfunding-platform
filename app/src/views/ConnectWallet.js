@@ -1,17 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import '../styles/styles.css'
 import MetaMaskOnboarding from '@metamask/onboarding'
 import {Metamask} from '../components/svg/Metamask.jsx'
 import {useNavigate, useLocation} from 'react-router-dom';
+import SnackBar from '../components/Snackbar';
 
 const ConnectWallet = () => {
     const [account, setAccount] = useState('');
     const state = useLocation().state;
     const navigate = useNavigate();
+    const [open, setOpen] = useState(false);
 
-    useEffect(() => {
-        //console.log(state)
-    });
 
     const connectWallet = async () => {
         if(!MetaMaskOnboarding.isMetaMaskInstalled()){
@@ -46,12 +45,16 @@ const ConnectWallet = () => {
             //After signin, back to homepage
             navigate("/");
         } else {
-            alert('Please connect wallet first!')
+            setOpen(true)
+            setTimeout(() => {
+                setOpen(false)
+            }, 2000);
         }
     }
     
     return (
         <div className='auth-background'>
+            <SnackBar message="Please connect your wallet first" open={open} fail={true} />
             <div className='form'>
                 <h1>Connect your wallet</h1>
                 <p>If you don't have a wallet yet, create one now.</p>
