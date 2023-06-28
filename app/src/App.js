@@ -42,7 +42,7 @@ function App() {
         </Route>
         <Route path="contributions">
           <Route index element={<Contribution />} />
-          <Route path=":projectid/proofs" element={<ViewProof  />}/>
+          <Route path=":cid/proofs" element={<ViewProof  />}/>
         </Route>
       </Routes>
     </Router>

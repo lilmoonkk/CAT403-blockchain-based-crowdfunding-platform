@@ -5,11 +5,17 @@ import {Link} from 'react-router-dom';
 
 const Explore = () => {
     const [contributions, setcontributions] = useState([]);
+
     const status = {
         'Approved' : 'Funding Campaign Ongoing',
         'Started' : 'Project Ongoing',
-        'Milestone Rejected' : 'Terminated',
-        'Waiting for proof approval' : 'Project Ongoing'
+        'Milestone Rejected' : 'Unsuccessful',
+        'Waiting for proof approval' : 'Proof Uploaded',
+        'Claimable' : 'Project Ongoing',
+        'All returned' : ' Unsuccessful',
+        'Half returned' : 'Unsuccessful',
+        'Rejected' : 'Rejected', 
+        'Unsuccessful' : 'Unsuccessful'
     }
     
     useEffect(() => {
@@ -47,8 +53,8 @@ const Explore = () => {
                         <div className='col-amount'>{c.amount}</div>
                         <div className='col-tx'>{c.txhash}</div>
                         <div className='col-time'>{c.time}</div>
-                        <div className='col-status'>{status[c.status]}</div>
-                        <div className='col-proof'><button className='profile-proof-button' style={{margin: '10px 0'}}><Link style={{textDecoration: "none", color: "#fff"}} to={{ pathname: `${c.projectid}/proofs`}}  state= {{milestone:c.milestone}} >View</Link></button></div>
+                        <div className='col-status'>{status[c.status]?status[c.status]:c.status}</div>
+                        <div className='col-proof'><button className='profile-proof-button' style={{margin: '10px 0'}}><Link style={{textDecoration: "none", color: "#fff"}} to={{ pathname: `${c._id}/proofs`}}  state= {{milestone:c.milestone, pid: c.projectid}} >View</Link></button></div>
                     </div>
                     ))}
                     <div className='total-cont'>Total contributions : {contributions.length}</div>

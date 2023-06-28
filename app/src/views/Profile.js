@@ -80,7 +80,7 @@ const Profile = () => {
                                 <p>{project.pledged?project.pledged.toFixed(5):0} ETH raised / {project.totalfund} ETH</p>
                                 {project.pledged >= project.totalfund&&<Tick />}
                             </div>
-                            <div className='project-status proof-button' >{status[project.status]}</div>
+                            <div className='project-status proof-button' >{status[project.status]?status[project.status]:project.status}</div>
                         </div>
                         <div style={{width: '105px'}}>
                             <button className='profile-proof-button'><Link style={{textDecoration: "none", color: "#fff"}} to={{ pathname: `${project._id}/proofs`}} state= {{project:project}} >Proof</Link></button>

@@ -628,7 +628,6 @@ button{
 }
 
 .proof-img{
-    border: 1px solid;
     height: 200px;
 }
 
@@ -638,7 +637,11 @@ button{
 }
 
 .proof-img-row-container{
+    border: 1px solid;
     display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 10px;
 }
 
 .milestone-complete-text{

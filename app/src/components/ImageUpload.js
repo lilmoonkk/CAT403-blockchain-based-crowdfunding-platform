@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/styles.css';
+import SnackBar from '../components/Snackbar';
 
 const ImageUpload = (props) => {
     const [selectedImages, setSelectedImages] = useState([]);
+    const [open, setOpen] = useState(false);
   
     const handleDrop = (event) => {
       event.preventDefault();
@@ -56,13 +58,16 @@ const ImageUpload = (props) => {
             body: formData
         }).catch(error => alert(error.message));
         if(res.ok){
-          alert('You have placed your proofs successfully!')
+          setOpen(true)
+          window.location.reload(false);
+          //alert('You have placed your proofs successfully!')
             //window.location.replace('/')
         }
     };
   
     return (
       <div>
+        <SnackBar message="You have uploaded your proofs successfully!" open={open}/>
         <div
           className = "file-upload-div"
           onDrop={handleDrop}
