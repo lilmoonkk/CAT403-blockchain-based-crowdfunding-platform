@@ -195,6 +195,17 @@ router.get('/:id/proofs', async function(req, res){
     }
 });
 
+router.get('/verify/:cid/:mseq', async function(req, res){
+    let cid = req.params.cid.toString();
+    let mseq = parseInt(req.params.mseq);
+    const body = await responsedb.findOne({ cid : cid, milestone: mseq})
+    if (body){
+        res.send(true)
+    } else {
+        res.send(false)
+    }
+});
+
 router.post('/approve', async function(req, res){
     let body = req.body;
     try{

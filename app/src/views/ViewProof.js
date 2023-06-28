@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams,  useLocation } from "react-router-dom"
 import '../styles/styles.css';
 import Timer from '../components/Timer';
+import SnackBar from '../components/Snackbar';
 
 const ViewProof = (props) => {
     const params = useParams()
@@ -11,7 +12,9 @@ const ViewProof = (props) => {
     const [curmil, setcurmil] = useState(0);
     const {state} = useLocation();
     const milestoneData = state.milestone;
-    
+    const pid = state.pid;
+    const [open, setOpen] = useState(false);
+    const [verify, setVerify] = useState(false);
     useEffect(() => {
         for(let i=0; i<milestoneData.length; i++){
           if(!milestoneData.approved){
@@ -19,29 +22,40 @@ const ViewProof = (props) => {
             break
           }
         }
-
-        async function fetchData(){
-            await fetch(`/proof/${params.projectid}/proofs`).then(function(response) {
-                return response.json();
-            }).then(function(data) {
-                if(data[0]){
-                  setpendingmil(data[0])
-                  setpendingProof(data[data[0].milestone])
-                  delete data[data[0].milestone]
-                  delete data[0]
-                }
-                
-                //let temp = data[0].length
-                if(data){
-                  //Have approval pending proof
-                  setproofs(data);
-                }
-            }).catch(error => console.log(error.message));
-            
-        }
-        
-        fetchData()
     }, []);
+
+    useEffect(() => {
+      async function isVerified(){
+        await fetch(`/proof/verify/${params.cid}/${curmil+1}`).then(function(response) {
+            return response.text();
+        }).then(function(data) {
+            setVerify(data)
+        }).catch(error => console.log(error.message));
+      }
+
+      async function fetchData(){
+          await fetch(`/proof/${pid}/proofs`).then(function(response) {
+              return response.json();
+          }).then(function(data) {
+              if(data[0]){
+                setpendingmil(data[0])
+                setpendingProof(data[data[0].milestone])
+                delete data[data[0].milestone]
+                delete data[0]
+              }
+              
+              //let temp = data[0].length
+              if(data){
+                //Have approval pending proof
+                setproofs(data);
+              }
+          }).catch(error => console.log(error.message));
+          
+          }
+          
+          isVerified()
+          fetchData()
+      }, [curmil]);
 
     const handleApprove = async(milestone) => {
       const res = await fetch('/proof/approve',{
@@ -49,13 +63,15 @@ const ViewProof = (props) => {
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
             uid: sessionStorage.getItem('uid'),
-            projectid: params.projectid,
+            projectid: pid,
             milestone: milestone,
+            cid: params.cid,
             approved: true
           })
       }).catch(error => alert(error.message));
       if(res.ok){
-        alert('You have placed your proofs successfully!')
+        setOpen(true)
+        window.location.reload(false);
           //window.location.replace('/')
       }
     };
@@ -66,19 +82,21 @@ const ViewProof = (props) => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           uid: sessionStorage.getItem('uid'),
-          projectid: params.projectid,
+          projectid: pid,
           milestone: milestone,
+          cid: params.cid,
           approved: false
         })
     }).catch(error => alert(error.message));
     if(res.ok){
-      alert('You have placed your proofs successfully!')
+      setOpen(true)
+      window.location.reload(false);
         //window.location.replace('/')
     }
     };
 
     const handleVerify = async(milestone) => {
-      await fetch(`/proof/verify/${params.projectid}/${milestone}`).then(function(response) {
+      await fetch(`/proof/verify/${pid}/${milestone}`).then(function(response) {
         return response.json();
     }).then(function(data) {
         if(data){
@@ -91,6 +109,7 @@ const ViewProof = (props) => {
     
     return (
       <div class='proof-bg'>
+        <SnackBar message="Your response is recorded" open={open}/>
         <div class='proof-container'>
           <div className="timeline">
             <div className="line" />
@@ -110,17 +129,18 @@ const ViewProof = (props) => {
             <h3 style={{color: '#005dba'}}>Milestone {pendingmil.milestone}</h3>
             <p style={{fontWeight: '600'}}>{milestoneData[pendingmil.milestone-1].title}</p>
             <p style={{fontStyle: 'italic'}}>{milestoneData[pendingmil.milestone-1].desc && milestoneData[pendingmil.milestone-1].desc }</p>
-            <div className='proof-img-row-container' style={{justifyContent: 'center'}}>
+            <div className='proof-img-row-container' style={{justifyContent: 'space-between'}}>
             {pendingProof.map((proof) => (
               <div key={proof._id} className='proof-img-container'>
                 <img src={proof} alt="Proof" class='proof-img'/>
               </div>
             ))}
             </div>
-            <div style={{marginTop: '10px'}}>
+            {verify == 'true'?(<h3>Thanks for your response</h3>):
+            (<div style={{marginTop: '10px'}}>
                 <button className='proof-button approve-button' onClick={()=>handleApprove(pendingmil.milestone)}>Approve</button>
                 <button className='proof-button approve-button' style={{backgroundColor: '#bf0000'}} onClick={()=>handleReject(pendingmil.milestone)}>Reject</button>
-            </div>
+            </div>)}
             <div style={{display:'flex', justifyContent: 'center'}}>
               <Timer targetDate={pendingmil.end} />
               <p>left</p>
