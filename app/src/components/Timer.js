@@ -5,7 +5,7 @@ const Timer = ({ targetDate }) => {
 
   const calculateTimeLeft = () => {
     const currentTime = new Date().getTime();
-    const targetDateTime = new Date(targetDate);
+    /*const targetDateTime = new Date(targetDate);
     //console.log(targetDateTime)
     const deadline = new Date(
       targetDateTime.getFullYear(),
@@ -14,7 +14,8 @@ const Timer = ({ targetDate }) => {
       23,
       59,
       0
-    ).getTime();
+    ).getTime();*/
+    const deadline = targetDate
 
     let timeLeft = Math.floor((deadline - currentTime) / 1000);
     if (timeLeft < 0) {

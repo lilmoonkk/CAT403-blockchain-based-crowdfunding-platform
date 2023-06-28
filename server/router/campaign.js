@@ -40,15 +40,16 @@ const verifySuccess = schedule.scheduleJob(rule, async function(){
         //var day = 24 * 60 * 60 * 1000;
         //var now = new Date().getTime() + 8 * 60 * 60 * 1000;
         var end = new Date(element.end)
-        const deadline = new Date(
+        /*const deadline = new Date(
             end.getFullYear(),
             end.getMonth(),
             end.getDate(),
             23,
             59,
             0
-        ).getTime();
-        if( end.getTime() <= deadline ){
+        ).getTime();*/
+        const currentTime = new Date().getTime();
+        if( end.getTime() <= currentTime ){
             let query = { _id : element._id };
             let update
             if(element.totalfund <= element.pledged){
@@ -188,15 +189,16 @@ const verifyComplete = schedule.scheduleJob(rule, async function(){
     
     body.forEach(element => {
         var end = new Date(element.end)
-        const deadline = new Date(
+        /*const deadline = new Date(
             end.getFullYear(),
             end.getMonth(),
             end.getDate(),
             23,
             59,
             0
-        ).getTime();
-        if( end.getTime() <= deadline ){
+        ).getTime();*/
+        const currentTime = new Date().getTime();
+        if( end.getTime() <= currentTime ){
             const options = {
                 url: 'http://localhost:3000/proof/conclude',
                 method: 'PUT',
