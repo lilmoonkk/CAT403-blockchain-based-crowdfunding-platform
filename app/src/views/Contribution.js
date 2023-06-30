@@ -12,8 +12,8 @@ const Explore = () => {
         'Milestone Rejected' : 'Unsuccessful',
         'Waiting for proof approval' : 'Proof Uploaded',
         'Claimable' : 'Project Ongoing',
-        'All returned' : ' Unsuccessful',
-        'Half returned' : 'Unsuccessful',
+        'All returned' : 'Fund returned',
+        'Half returned' : 'Fund returned',
         'Rejected' : 'Rejected', 
         'Unsuccessful' : 'Unsuccessful'
     }
@@ -54,7 +54,7 @@ const Explore = () => {
                         <div className='col-tx'>{c.txhash}</div>
                         <div className='col-time'>{c.time}</div>
                         <div className='col-status'>{status[c.status]?status[c.status]:c.status}</div>
-                        <div className='col-proof'><button className='profile-proof-button' style={{margin: '10px 0'}}><Link style={{textDecoration: "none", color: "#fff"}} to={{ pathname: `${c._id}/proofs`}}  state= {{milestone:c.milestone, pid: c.projectid}} >View</Link></button></div>
+                        <div className='col-proof'><button className='profile-proof-button' style={{margin: '10px 0'}}><Link style={{textDecoration: "none", color: "#fff"}} to={{ pathname: `${c._id}/proofs`}}  state= {{milestone:c.milestone, pid: c.projectid, cur:c.current_mil}} >View</Link></button></div>
                     </div>
                     ))}
                     <div className='total-cont'>Total contributions : {contributions.length}</div>

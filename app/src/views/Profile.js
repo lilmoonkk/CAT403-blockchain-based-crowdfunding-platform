@@ -3,9 +3,11 @@ import {Tick} from '../components/svg/Tick.jsx'
 import VerticalNav from '../components/VerticalNav';
 import '../styles/styles.css';
 import {Link} from 'react-router-dom';
+import SnackBar from '../components/Snackbar';
 
 const Profile = () => {
     const [projects, setprojects] = useState([]);
+    const [open, setOpen] = useState(false);
     const status = {
         'Approved' : 'Funding Campaign Ongoing',
         'Started' : 'Project Ongoing',
@@ -49,7 +51,8 @@ const Profile = () => {
                 })
         }).catch(error => alert(error.message));
         if(res.ok){
-            alert(`You have claimed the fund of milestone ${project.current_mil}!`)
+            setOpen(true)
+            //alert(`You have claimed the fund of milestone ${project.current_mil}!`)
             //window.location.replace('/')
         }
         } else {
@@ -64,6 +67,7 @@ const Profile = () => {
 
     return (
         <div className='profile-background' style={{display: 'flex'}}>
+            <SnackBar message="You have claimed the fund of the next milestone!" open={open}/>
             <VerticalNav />
             <div className='profile-project-container'>
             {projects.map((project) => (
