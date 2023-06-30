@@ -15,6 +15,7 @@ import ViewProof from './views/ViewProof';
 import Admin from './views/Admin';
 import AdminLogin from './views/AdminLogin';
 import History from './views/History';
+import PastProof from './views/PastProof';
 
 function App() {
   return (
@@ -30,7 +31,10 @@ function App() {
         <Route path="start-a-project" element={<StartProject  />}/>
         <Route path="explore" element={<Explore  />}/>
         <Route path="project/:projectid" element={<Project  />}/>
-        <Route path="user/:uid/history" element={<History  />}/>
+        <Route path='user/:uid/history'>
+          <Route index element={<History  />}/>
+          <Route path=":projectid/proofs" element={<PastProof  />}/>
+        </Route>
         <Route path="admin">
           <Route index element={<Admin />} />
           <Route path="login" element={<AdminLogin  />}/>

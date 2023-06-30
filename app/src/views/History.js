@@ -62,7 +62,7 @@ const History = () => {
                             <div className='project-status proof-button' >{status[project.status]}</div>
                             
                         </div>
-                        {<button className='profile-proof-button'><Link style={{textDecoration: "none", color: "#fff"}} to={{ pathname: `/contributions/${project._id}/proofs`}} state= {{milestone:project.milestone}} >Proof</Link></button>}
+                        {<button className='profile-proof-button'><Link style={{textDecoration: "none", color: "#fff"}} to={{ pathname: `${project._id}/proofs`}} state= {{project:project}} >Proof</Link></button>}
                     </div>
                 </>
             ))}
