@@ -47,27 +47,30 @@ const UploadProof = (props) => {
               
               <div
                 key={index}
-                className={`timeline-item ${data.current_mil-1 > index ? 'complete' : data.current_mil-1 == index ? 'active' : ''}`}
+                className={`timeline-item ${data.current_mil-1 > index || data.status == 'Completed successfully' ? 'complete' : data.current_mil-1 == index&&'active'}`}
                 //onClick={() => handleIndexChange(index)}
               >
                 <div className='timeline-text'>Milestone {index+1}</div>
               </div>
             ))}
           </div>
-          <div className='pending-proof-container'>
-            {pendingProof?(<h3>Image upload is not available at the moment due to pending proofs of completion</h3>):(
+          {data.status !== 'Completed successfully' && (<div className='pending-proof-container'>
+            {pendingProof?(<h3>Image upload is not available at the moment due to pending proofs of completion</h3>)
+            :data.status == 'Milestone Rejected'? (<h3>Project failed</h3>):
+            (
             <div className='upload-proof-container'>
               <h3>Upload proof of completion for  milestone {data.current_mil}</h3>
               <ImageUpload project={data}></ImageUpload>
             </div>
             )}
-          </div>
+          </div>)}
           {proofs.length !== 0 && Object.entries(proofs).map(([milestone, proofList]) => (
             <div key={milestone} style={{marginBottom: '30px'}}>
               <div style={{display: 'flex', alignItems: 'center'}}>
                 <h3 style={{color: '#005dba'}}>Milestone {milestone}</h3>
                 {milestone == pendingmil?
                 (<div className='milestone-complete-text proof-button' style={{backgroundColor: '#bf0000'}}>Pending</div>):
+                data.status == 'Milestone Rejected' && data.current_mil == milestone?(<div className='milestone-complete-text proof-button' style={{backgroundColor: '#bf0000'}}>Failed</div>):
                 (<div className='milestone-complete-text proof-button'>Completed</div>)}
               </div>
               <p style={{fontWeight: '600'}}>{data.milestone[milestone-1].title}</p>

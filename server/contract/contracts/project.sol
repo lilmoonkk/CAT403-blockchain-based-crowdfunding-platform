@@ -52,6 +52,11 @@ contract project{
         //backer = _backer;
     }
 
+    receive() external payable {
+        pledged += msg.value;
+        emit Pledge(msg.sender, msg.value);
+    }
+
     function pledge(uint _amount) external payable {
         //pledgedAmount[_id][msg.sender] += _amount;
         // transfer fund to smart contract

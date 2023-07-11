@@ -195,7 +195,7 @@ router.get('/:id/proofs', async function(req, res){
     }
 });
 
-router.get('/verify/:cid/:mseq', async function(req, res){
+router.get('/responded/:cid/:mseq', async function(req, res){
     let cid = req.params.cid.toString();
     let mseq = parseInt(req.params.mseq);
     const body = await responsedb.findOne({ cid : cid, milestone: mseq})
@@ -228,8 +228,8 @@ router.post('/reject', async function(req, res){
 
 router.put('/conclude', async function(req, res){
     let body = req.body
-    concludeApproval(body.milestone, body.pid)
-    res.sendStatus(200)
+    let result = await concludeApproval(body.milestone, body.pid)
+    res.send(result)
 });
 
 async function concludeApproval(milestone, pid){
@@ -256,7 +256,7 @@ async function concludeApproval(milestone, pid){
         let approved = false
         if(approve >= (overall / 3 * 2)){
             approved = true
-            projectdb.updateOne({ _id : new ObjectId(pid) }, {$set: {"milestone.$[elem].approved": approved, "current_mil": milestone+1}},{arrayFilters: [{ "elem.seq": milestone }]});
+            projectdb.updateOne({ _id : new ObjectId(pid) }, {$set: {"milestone.$[elem].approved": approved, "current_mil": milestone+1, status: 'Claimable'}},{arrayFilters: [{ "elem.seq": milestone }]});
             proofdb.updateOne({ projectid : pid, milestone: parseInt(milestone) }, {$set: {status: 'Approved'}});
             const addresses = await projectdb.findOne({_id: new ObjectId(pid)}, {projection: {contract_address: 1, owner_address: 1}});
             s = approved + s
@@ -281,13 +281,40 @@ async function concludeApproval(milestone, pid){
                 console.log('txhash', value);
                 }
             )
+            return true
 
         } else {
+            console.log(approved)
             projectdb.updateOne({ _id : new ObjectId(pid) }, {$set: {"milestone.$[elem].approved": approved, status: 'Milestone Rejected'}},{arrayFilters: [{ "elem.seq": milestone }]});
             proofdb.updateOne({ projectid : pid, milestone: parseInt(milestone) }, {$set: {status: 'Rejected'}});
+            const addresses = await projectdb.findOne({_id: new ObjectId(pid)}, {projection: {contract_address: 1, owner_address: 1}});
+            s = approved + s
+            // Generate hash string
+            const hash = crypto.createHash('sha256');
+
+            // Update the hash with the image data
+            hash.update(s);
+
+            // Calculate the hash digest
+            const hashDigest = hash.digest('hex');
+            console.log('hash', hashDigest)
+            contract.uploadResponse(
+                {
+                contract_address: addresses.contract_address,
+                owner_address: addresses.owner_address,
+                milestone: milestone,
+                response: hashDigest,
+                approved: approved
+                },
+                function (value) {
+                console.log('txhash', value);
+                }
+            )
+            return false
         }
     } catch (err) {
         console.log("Failed because", err);
+        return 1
     }
 
 }
@@ -328,7 +355,7 @@ router.get('/verify/:pid/:milestone', async function(req, res){
     });
 
     //Verify response
-    const response = await responsedb.find(query).toArray();
+    const response = await responsedb.find({ projectid : pid, milestone: milestone }).toArray();
     let approve = 0
     let reject = 0
     let s = ""
@@ -349,17 +376,20 @@ router.get('/verify/:pid/:milestone', async function(req, res){
     let approved = false
     if(approve >= (overall / 3 * 2)){
         approved = true
-        s = approved + s
-        await createHash(s).then(async(hash) => {
-            // Use the resolved hash here
-            console.log(hash)
-            query = { _id : new ObjectId(pid) };
-            const body = await projectdb.findOne(query, { projection: {contract_address:1}});
-            let compareresult = await contract.getResponse({contract_address:body.contract_address, milestone: milestone});
-            responsesame = (hash==compareresult)
-        });
-
+    } else {
+        approve = false
     }
+    s = approved + s
+    await createHash(s).then(async(hash) => {
+        // Use the resolved hash here
+        //console.log(hash)
+        query = { _id : new ObjectId(pid) };
+        const body = await projectdb.findOne(query, { projection: {contract_address:1}});
+        let compareresult = await contract.getResponse({contract_address:body.contract_address, milestone: milestone});
+        //console.log('result', compareresult)
+        responsesame = (hash==compareresult)
+    });
+
     if(proofsame && responsesame){
         res.send(true)
     }else{

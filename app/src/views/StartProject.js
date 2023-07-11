@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react';
 import '../styles/styles.css';
 import Milestone from '../components/Milestone';
 import {useNavigate} from 'react-router-dom';
-  
+import SnackBar from '../components/Snackbar';
+
 const StartProject = () => {
     const navigate = useNavigate();
     const [project, setproject] = useState({
@@ -18,7 +19,7 @@ const StartProject = () => {
     const [numMilestone, setnumMilestone] = useState(2);
     const [myr, setmyr] = useState((0).toFixed(2))
     const [selectedImages, setSelectedImages] = useState([]);
-    
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         if(!sessionStorage.getItem('uid')){
@@ -51,22 +52,41 @@ const StartProject = () => {
 
     const handleSubmit = async(e) =>{
         e.preventDefault()
-
-        let formData = new FormData()
-        formData.append('images', selectedImages)
-        formData.append('uid', sessionStorage.getItem('uid'));
-        formData.append('project', JSON.stringify(project));
-        formData.append('milestones', JSON.stringify(milestones));
+        let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        window.ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [
+              {
+                from: accounts[0],
+                to: '0x1610E02866Fce7B278a06FA1EfcCb81b5753AA85',
+                value: '0x40B3B3F4F9A00',
+                //gasPrice: '0x1000',
+                //gas: '0x16354',
+              },
+            ],
+        })
+        .then(async(txHash) => {
+            let formData = new FormData()
+            formData.append('images', selectedImages)
+            formData.append('uid', sessionStorage.getItem('uid'));
+            formData.append('project', JSON.stringify(project));
+            formData.append('milestones', JSON.stringify(milestones));
+            
+            const res = await fetch('/project/add',{
+                method: 'post',
+                //headers: {'Content-Type': 'application/json'},
+                body: formData
+            }).catch(error => alert(error.message));
+            if(res.ok){
+                setOpen(true)
+                window.location.replace('/')
+            }
+        })
+        .catch((error) => console.error('err',error));
         
-        const res = await fetch('/project/add',{
-            method: 'post',
-            //headers: {'Content-Type': 'application/json'},
-            body: formData
-        }).catch(error => alert(error.message));
-        if(res.ok){
-            alert('Your project have been submitted.')
-            window.location.replace('/')
-        }
+        
+
+        
     }
 
     const handleInputChange = (e) => {
@@ -99,8 +119,11 @@ const StartProject = () => {
         setmyr((amount * 8000).toFixed(2));
     }
 
+    
+
     return (
         <div className='background' style={{background: 'rgb(254,248,246)'}}>
+            <SnackBar message="You have submitted your project proposal successfully" open={open}/>
             <div className='project-form'>
                 <h1>Let's get ready to start your project!</h1>
                 <form className='form-body'>
@@ -128,10 +151,12 @@ const StartProject = () => {
                         <label className='project-form-label'>Campaign period (day)</label>
                         <input className="project-form-input" type='number' min='0' name='campaign_period' id='campaign_period' value={project.campaign_period} onChange={handleInputChange}/>
                     </div>
-                    <p className='conversion-text'>* Your campaign will be started after admin has approved your submission.</p>
+                    <p className='warning-text'>* Your campaign will be started after admin has approved your submission.</p>
                 </form>
                 <div>
                     <h3 className='milestone-title'>Milestones</h3>
+                    <p className='warning-text'>**Please include gas fee in your fund calculation.</p>
+                    <p className='warning-text'>**Please expect to be charged for 0.0015 ETH when you submit the project proposal. It is for processing fee of smart contract later.</p>
                     {[...Array(numMilestone)].map((_, index) => (
                     <><p className='milestone-title'>Milestone {index+1}</p><Milestone key={index} onChange={(data) => handleMilestonesChange(index, data)} /></>))}
                     <button className='add-milestone-button' onClick={addMilestone}>Add Milestone</button>

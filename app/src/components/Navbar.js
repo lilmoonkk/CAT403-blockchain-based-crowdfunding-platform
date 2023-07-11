@@ -25,14 +25,14 @@ const Navbar = () => {
 	
 	const Profile = () => {
 		return(
-		<>
+		<div style={{display:'flex', position:'absolute', right: '10px'}}>
 			<NavLink to="/created-projects" activeStyle>
 				Profile
 			</NavLink>
 			<NavLogOut onClick={logout}>
 				Log out
 			</NavLogOut>
-		</>);
+		</div>);
 	}
 	
 	const logout = () => {

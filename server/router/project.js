@@ -121,16 +121,16 @@ router.put('/:id/approve', async function(req, res){
     try{
         //projectdb.updateOne(query, update);
         //After approval, smart contract for the project is created
-        const body = await projectdb.findOne(query, { projection: {milestone:1, wallet_address:1, campaign_period: 1}});
+        const body = await projectdb.findOne(query, { projection: {milestone:1, owner_address:1, campaign_period: 1}});
         //console.log(body);
         //need to get address from cache
         
-        await contract.createSmartContract({id: projectid, milestone: body.milestone}, function(value){
+        await contract.createSmartContract({id: projectid, milestone: body.milestone, owner_address:body.owner_address}, function(value){
             //let update = { $set: { Approved: true, contract_address: contractAddr } };
-            const current = new Date().getTime() + 8 * 60 * 60 * 1000;
+            const current = new Date().getTime() //+ 8 * 60 * 60 * 1000;
             const duration = 1000 * 60 * 60 * 24 * body.campaign_period;
             const end = current + duration;
-            projectdb.updateOne(query, { $set: { status: 'Approved', start: current, end: end, pledged: 0, contract_address: value } });
+            projectdb.updateOne(query, { $set: { status: 'Approved', start: current, end: end, pledged: 0, contract_address: value, current_mil: 1 } });
             res.sendStatus(200);
         }); //get projectid, milestone and wallet address and fing variable for array of objects
         
@@ -144,7 +144,7 @@ router.put('/:id/reject', async function(req, res){
     let projectid = req.params.id.toString();
     let query = { _id : new ObjectId(projectid) };
     try{
-        const current = new Date().getTime() + 8 * 60 * 60 * 1000;
+        const current = new Date().getTime() //+ 8 * 60 * 60 * 1000;
         projectdb.updateOne(query, { $set: { status: 'Rejected', end: current } }); 
         res.sendStatus(200);
     } catch (err) {
@@ -169,18 +169,18 @@ router.get('/:id/projects', async function(req, res){
 // 7 Pledge to a project
 router.put('/pledge', async function(req, res){
     let body = req.body;
-    let timestamp = new Date().getTime() + 8 * 60 * 60 * 1000;
-    await contract.pledge({contract_address:body.contract_address, caller_address:body.caller_address, pledge:body.pledge}, function(value){
+    let timestamp = new Date().getTime() //+ 8 * 60 * 60 * 1000;
+    //await contract.pledge({contract_address:body.contract_address, caller_address:body.caller_address, pledge:body.pledge}, function(value){
         contributiondb.insertOne({
             uid: body.uid,
             projectid: body.projectid,
             caller_address: body.caller_address,
             amount: body.pledge,
             timestamp: timestamp,
-            txhash: value
+            txhash: body.tx
         }) 
         projectdb.updateOne({ _id : new ObjectId(body.projectid) }, {$inc:{pledged:Number(body.pledge)}});
-    });
+    //});
     res.sendStatus(200);
 });
 
@@ -209,8 +209,8 @@ router.put('/claim', async function(req, res){
     let body = req.body;
     await contract.claim({contract_address:body.contract_address, caller_address:body.caller_address, milestoneseq:body.milestoneseq}, function(value){
         console.log('value',value)
-        let timestamp = new Date().getTime() + 8 * 60 * 60 * 1000;
-        projectdb.updateOne({ 'contract_address':body.contract_address, 'milestone.seq': body.milestoneseq}, { $set: { 'milestone.$.txhash': value, 'milestone.$.timestamp': timestamp , status: 'Started'} });
+        let timestamp = new Date().getTime() //+ 8 * 60 * 60 * 1000;
+        projectdb.updateOne({ 'contract_address':body.contract_address, 'milestone.seq': body.milestoneseq}, { $set: { 'milestone.$.txhash': value, 'milestone.$.timestamp': timestamp , status: `Started milestone ${body.milestoneseq}`} });
     });
     res.sendStatus(200);
 });
@@ -242,7 +242,8 @@ router.get('/:uid/contributions', async function(req, res){
                   link: { $arrayElemAt: ["$result.link", 0] },
                   projectid: 1,
                   milestone: { $arrayElemAt: ["$result.milestone", 0] },
-                  status: { $arrayElemAt: ["$result.status", 0] }
+                  status: { $arrayElemAt: ["$result.status", 0] },
+                  current_mil: { $arrayElemAt: ["$result.current_mil", 0] },
                 }
             },
             {
@@ -254,8 +255,8 @@ router.get('/:uid/contributions', async function(req, res){
                     link: 1,
                     projectid: 1,
                     milestone: 1,
-                    status: 1
-
+                    status: 1,
+                    current_mil: 1
                 }
             }
         ]).toArray();

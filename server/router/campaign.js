@@ -29,13 +29,13 @@ rule.hour = 0;
 rule.minute = 0;
 //rule.second = null;
 rule.tz = 'Asia/Kuala_Lumpur'
-
+//var date = new Date(new Date().getTime() + 1000);
 //Verify if campaigns are successfully funded
 const verifySuccess = schedule.scheduleJob(rule, async function(){
     //console.log('This job runs every day at 9:00 AM in Malaysia timezone.');
     let query = { status : 'Approved' };
     const body = await projectdb.find(query).toArray();
-    
+    //const element =  await projectdb.findOne({_id: new ObjectId('649edd7a700d692f8e8012e0')})
     body.forEach(element => {
         //var day = 24 * 60 * 60 * 1000;
         //var now = new Date().getTime() + 8 * 60 * 60 * 1000;
@@ -56,7 +56,7 @@ const verifySuccess = schedule.scheduleJob(rule, async function(){
                 update = { $set: { status: 'Claimable' } };
             } else {
                 update = { $set: { status: 'Unsuccessful' } };
-                //returnAllFund(element._id)
+                returnAllFund(element._id.toString())
             }
             try{
                 projectdb.updateOne(query, update);
@@ -169,9 +169,10 @@ async function returnHalfFund(projectid){
         //const userbody = await userdb.findOne({ _id : element.uid }, {projection: {wallet_address: 1}});
 
         // Transfer remaining fund
-        contract.transfer({contract_address: element.contract_address, caller_address: element.caller_address, revaddress : element.caller_address, amount : amount}, function(value){
+        contract.transfer({contract_address: element.contract_address, caller_address: element.caller_address, revaddress : element.caller_address, amount : amount.toFixed(5)}, function(value){
             let query = { _id : element._id };
             let update = { $set: { status: 'Half returned' } }
+            console.log('returned successfully')
             try{
                 contributiondb.updateOne(query, update);
                 
@@ -200,7 +201,7 @@ const verifyComplete = schedule.scheduleJob(rule, async function(){
         const currentTime = new Date().getTime();
         if( end.getTime() <= currentTime ){
             const options = {
-                url: 'http://localhost:3000/proof/conclude',
+                url: 'http://localhost:3001/proof/conclude',
                 method: 'PUT',
                 json: true,
                 body: { 
@@ -208,7 +209,6 @@ const verifyComplete = schedule.scheduleJob(rule, async function(){
                     pid: element.projectid
                 }
             };
-            // if response says this is second time already, return half fund
             request.put(options, (error, response, body) => {
                 if (error) {
                   // Handle any errors that occur during the request
@@ -216,6 +216,12 @@ const verifyComplete = schedule.scheduleJob(rule, async function(){
                 } else {
                   // Handle the response from the PUT request
                   console.log(body);
+                  if(body){
+                    //Approve
+                  }else{
+                    //Reject
+                    returnHalfFund(element.projectid)
+                  }
                 }
             });
         }
@@ -226,7 +232,7 @@ const verifyComplete = schedule.scheduleJob(rule, async function(){
 
 router.put('/:pid/test', async function(req, res){
     let pid = req.params.pid.toString();
-    returnHalfFund(pid)
+    returnAllFund(pid)
     res.sendStatus(200)
 });
 

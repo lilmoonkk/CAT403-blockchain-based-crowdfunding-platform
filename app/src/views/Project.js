@@ -3,6 +3,8 @@ import '../styles/styles.css';
 import { useParams, useNavigate } from "react-router-dom"
 import ProgressBar from '../components/ProgressBar';
 import Timer from '../components/Timer';
+import Web3 from 'web3';
+
 
 const Project = () => {
     const params = useParams()
@@ -10,7 +12,8 @@ const Project = () => {
     const [project, setproject] = useState({});
     const [pledgeamount, setpleadgeamount] = useState(0.00);
     const [myr, setmyr] = useState((0).toFixed(2))
-
+    const web3 = new Web3(window.ethereum);
+    
     useEffect(() => {
         async function fetchData(){
             await fetch(`/project/${params.projectid}/get`).then(function(response) {
@@ -33,26 +36,36 @@ const Project = () => {
           if(accounts.length){
               //let value = (pledgeamount * 1000000000000000000).toString(16);
               //console.log('test',value)
-              /*window.ethereum
+              /*let valueInHex = '0x0'
+              if (pledgeamount > 0){
+                const valueInWei = pledgeamount * Math.pow(10, 18);
+                console.log('inwei', valueInWei)
+                const  intValue = parseInt(valueInWei);
+                valueInHex = intValue.toString(16);
+                console.log('inhex', valueInHex)
+              }
+              
+              let accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+              window.ethereum
             .request({
               method: 'eth_sendTransaction',
               params: [
                 {
-                  from: '0x1610E02866Fce7B278a06FA1EfcCb81b5753AA85',
+                  from: accounts[0],
                   to: project.contract_address,
-                  value: '0x'+value,
-                  gasPrice: '0x09184e72a000',
-                  gas: '0x5208',
+                  value: valueInHex,
+                  //gasPrice: '0x1000',
+                  //gas: '0x16354',
                 },
               ],
             })
             .then((txHash) => console.log(txHash))
             .catch((error) => console.error('err',error));*/
-            const res = await fetch('/project/pledge',{
+            /*const res = await fetch('/project/pledge',{
                 method: 'put',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    uid : project.uid,
+                    uid : sessionStorage.getItem('uid'),
                     projectid : project._id,
                     contract_address: project.contract_address, 
                     caller_address: accounts[0],
@@ -60,10 +73,45 @@ const Project = () => {
                 })
             }).catch(error => alert(error.message));
             if(res.ok){
-              alert('You have placed your pledge successfully!')
+              //alert('You have placed your pledge successfully!')
                 //window.location.replace('/')
-            }
+            }*/
           
+            try {
+              const accounts = await web3.eth.getAccounts();
+              let valueInHex = '0x0'
+              if (pledgeamount > 0){
+                const valueInWei = pledgeamount * Math.pow(10, 18);
+                console.log('inwei', valueInWei)
+                const  intValue = parseInt(valueInWei);
+                valueInHex = intValue.toString(16);
+                console.log('inhex', valueInHex)
+              }
+              const transaction = {
+                from: accounts[0],
+                to: project.contract_address, // Replace with the recipient's address
+                value: '0x'+valueInHex, // Replace with the amount of ether to send
+              };
+            
+              const result = await web3.eth.sendTransaction(transaction);
+              console.log('Transaction successful:', result);
+
+              const res = await fetch('/project/pledge',{
+                  method: 'put',
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({
+                      uid : sessionStorage.getItem('uid'),
+                      projectid : project._id,
+                      contract_address: project.contract_address, 
+                      caller_address: accounts[0],
+                      pledge: pledgeamount,
+                      tx: result.transactionHash
+                  })
+              }).catch(error => alert(error.message));
+              } catch (error) {
+                console.error('Error sending transaction:', error);
+              }
+            
           } else {
             getAccount()
           }
@@ -116,7 +164,7 @@ const Project = () => {
             ))}
             </div>
         </div>
-        { project.status == 'Approved' || project.uid !== sessionStorage.getItem('uid') &&
+        { project.status == 'Approved' && project.uid !== sessionStorage.getItem('uid') &&
         <div className='pledge-container'>
             <form>
               <div style={{display:"flex"}}>

@@ -20,6 +20,10 @@ const ConnectWallet = () => {
                 // Return the address of the wallet
                 //console.log('res',res) 
                 setAccount(res[0]);
+                window.ethereum.on('accountsChanged', function (accounts) {
+                    // Time to reload your interface with accounts[0]!
+                    setAccount(accounts[0])
+                });
             })
         }
         
@@ -32,8 +36,7 @@ const ConnectWallet = () => {
                 method: 'post',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    firstname: state.firstname, 
-                    lastname: state.lastname, 
+                    username: state.username,
                     email: state.email, 
                     password: state.password,
                     wallet_address: account
@@ -42,6 +45,7 @@ const ConnectWallet = () => {
 
             const data = await res.text();
             sessionStorage.setItem("uid", data);
+            sessionStorage.setItem('wallet_address', account);
             //After signin, back to homepage
             navigate("/");
         } else {

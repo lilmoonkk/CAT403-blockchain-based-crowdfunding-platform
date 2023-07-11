@@ -111,7 +111,7 @@ const Admin = () => {
                     </div>
                     <div className='col-admin-total'>
                         {p.campaign_period>=1?(<p>{p.campaign_period} day</p>):
-                        (<p>{p.campaign_period * 60} minute</p>)}
+                        (<p>{p.campaign_period * 1440} minute</p>)}
                     </div>
                     <div className='col-admin-catg'>
                         {p.status == 'Submitted'?

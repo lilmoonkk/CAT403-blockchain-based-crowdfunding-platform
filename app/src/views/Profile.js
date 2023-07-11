@@ -13,7 +13,7 @@ const Profile = () => {
         'Started' : 'Project Ongoing',
         'Milestone Rejected' : 'Unsuccessful',
         'Waiting for proof approval' : 'Project Ongoing',
-        'Claimable' : 'Project Ongoing',
+        'Claimable' : 'Claimable',
         'All returned' : ' Unsuccessful',
         'Half returned' : 'Unsuccessful',
         'Rejected' : 'Rejected', 
@@ -54,6 +54,10 @@ const Profile = () => {
             setOpen(true)
             //alert(`You have claimed the fund of milestone ${project.current_mil}!`)
             //window.location.replace('/')
+            setTimeout(() => {
+                setOpen(false)
+                window.location.reload(false)
+            }, 1000);
         }
         } else {
             getAccount()

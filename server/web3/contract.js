@@ -16,7 +16,7 @@ const createSmartContract = ((req, callback) => {
     let account = '0xdbB393C2f1F81f84B3d1b86DD62cbD2bB226df36'; 
     //let account = req.owner_address;
     let parameter = {
-        from: account,
+        from: req.owner_address,
         gas: web3.utils.toHex(6721975),
         gasPrice: web3.utils.toHex(web3.utils.toWei('30', 'gwei'))
     }
